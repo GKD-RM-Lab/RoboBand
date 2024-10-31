@@ -39,7 +39,7 @@ bool Serial::isConnected() {
 int Serial::read(char *data) {
     try {
         int n;
-        if (eol == "") {
+        if (eol != "") {
             std::string str = serial.readline(buffer_size, eol);
             n = str.length();
             memcpy(data, str.c_str(), n);

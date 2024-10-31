@@ -21,7 +21,7 @@ public:
     webots::Robot robot;
     std::atomic<int> time;
     std::atomic<int> bind_runner_num {0};
-    std::barrier<> *sync_point;
+    std::barrier<> *sync_point {nullptr};
     std::vector<std::function<void ()>> updaters;
 
     int step();
