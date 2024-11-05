@@ -1,12 +1,14 @@
 #include <easylogging++.h>
 #include <fstream>
 #include <csignal>
+#include <filesystem>
 
 #include "robot_create.hpp"
 
 INITIALIZE_EASYLOGGINGPP
 
 std::atomic<bool> running {true};
+std::string project_path;
 
 void SigintHandler(int signum) {
     LOG(INFO) << "Interrupt signal (" << signum << ") received!";
@@ -17,10 +19,12 @@ int main(int argc, char **argv) {
 #ifndef USE_WEBOTS
     signal(SIGINT, SigintHandler);
 #endif
-    std::string robot_name;
-    std::string user_config_path = "./user.toml";
+    project_path = std::filesystem::absolute(argv[0]).parent_path().parent_path().parent_path();
 
-    el::Loggers::configureFromGlobal("./log/log.conf");
+    std::string robot_name;
+    std::string user_config_path = project_path + "/user.toml";
+
+    el::Loggers::configureFromGlobal((project_path + "/log/log.conf").c_str());
     el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
     std::remove("myeasylog.log");
 

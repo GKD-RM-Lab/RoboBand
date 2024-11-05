@@ -1,6 +1,8 @@
 #include "robot_create.hpp"
 #include "lqr_sim/lqr_sim.hpp"
 
+extern std::string project_path;
+
 namespace robo {
 Robot *robotCreate(const std::string &user_config_path) {
     toml::table config;
@@ -25,7 +27,8 @@ Robot *robotCreate(const std::string &user_config_path) {
     try {
 #ifdef USE_WEBOTS
         if (robot_name == "lqr_sim") {
-            config = toml::parse_file("./app/lqr_sim/default.toml");
+            LOG(DEBUG) << "Robot name: " << robot_name;
+            config = toml::parse_file(project_path + "/app/lqr_sim/default.toml");
             util::mergeConfig(user_config, config);
             robot = new LqrSim(config);
 #else

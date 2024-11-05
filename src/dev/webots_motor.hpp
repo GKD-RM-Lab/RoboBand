@@ -13,7 +13,7 @@ namespace dev {
 class WebotsMotor: public Dev<robo::io::Webots> {
 public:
     explicit WebotsMotor(robo::io::Webots &webots_io, const std::string &motor_name, const int dir);
-    ~WebotsMotor() = default;
+    ~WebotsMotor() override = default;
 
     robo::vir::MotorBinder binder {
         .setTorque = [this](float torque) { this->setTorque(torque); },

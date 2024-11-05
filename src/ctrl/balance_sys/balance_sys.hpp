@@ -11,10 +11,9 @@ namespace robo {
 namespace ctrl {
 class BalanceSys: public Ctrl{
 public:
-    explicit BalanceSys(const toml::table &config, const std::string &name);
+    explicit BalanceSys(const std::string &name, const toml::table &config);
     ~BalanceSys() override = default;
 
-    int cycle_ms;
     robo::vir::Imu imu;
     robo::vir::Motor wheel_motor[2];
     robo::vir::Motor joint_motor[2];
@@ -22,11 +21,19 @@ public:
     void ctrlLoop() override;
 
 private:
+    const int CYCLE_MS;
+    const float RADIUS_WHEEL;
+    const float S_REF_MAX;
+    const float PHI_REF_MAX;
+    const float THETA_L_REF_MAX;
+    const float THETA_B_REF_MAX;
+    const float WHEEL_TORQUE_MAX;
+    const float JOINT_TORQUE_MAX;
+    Eigen::Matrix<float, 4, 10> K;
+
     Eigen::Vector<float, 10> state_ref;
     Eigen::Vector<float, 10> state_set;
     Eigen::Vector<float, 4> ctrl_vec;
-    Eigen::Matrix<float, 4, 10> K;
-    float radius_wheel;
 };
 }
 }

@@ -13,6 +13,18 @@
 
 namespace robo {
 namespace util {
+/**math**/ 
+template <typename T>
+inline T abs_limit(T x, const T lim) {
+    if (x < -lim) {
+        x = -lim;
+    }
+    if (x > lim) {
+        x = lim;
+    }
+    return x;
+}
+
 /**toml**/
 void mergeConfig(toml::table& user_config, toml::table& default_config);
 

@@ -14,6 +14,13 @@ joint_motor_2_dir = -1
 [ctrl.balance_sys]
 cycle_ms = 1
 radius_wheel = 0.075
+s_ref_max = 1.0 
+phi_ref_max = 0.2
+theta_l_ref_max = 0.7
+theta_b_ref_max = 0.2
+wheel_torque_max = 6.0
+joint_torque_max = 20.0
+
 # K = [    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
 #          0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
 #          0,    0,    0,    0,    0,    0,    0,    0,    0,    0,

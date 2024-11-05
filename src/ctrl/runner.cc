@@ -1,9 +1,20 @@
 #include <easylogging++.h>
+#include <ctime>
+#include <cerrno>
+#include <chrono>
 
 #include "ctrl/runner.hpp"
 
 namespace robo {
 namespace run {
+void Runner::stop() {
+    running = false;
+    if (thread != nullptr) {
+        thread->join();
+        LOG(INFO) << "[Runner<" + name + ">] Stopped!";
+    }
+}
+
 #ifdef USE_WEBOTS
 void Runner::run() {
     if (webots_io == nullptr) {
@@ -18,19 +29,6 @@ void Runner::run() {
     running = true;
     thread = new std::thread([this]() { thread_func(); });
     LOG(INFO) << "[Runner<" + name + ">] Start running...";
-}
-
-void Runner::stop() {
-    running = false;
-    if (thread != nullptr) {
-        thread->join();
-        LOG(INFO) << "[Runner<" + name + ">] Stopped!";
-    }
-}
-
-void Runner::bind(robo::io::Webots &webots_io_) {
-    webots_io = &webots_io_;
-    webots_io->bind_runner_num++;
 }
 
 void Runner::thread_func() {
@@ -48,28 +46,36 @@ void Runner::thread_func() {
     }
 }
 
+void Runner::bind(robo::io::Webots &webots_io_) {
+    webots_io = &webots_io_;
+    webots_io->bind_runner_num++;
+}
+
 #else
 void Runner::run() {
-    running = true;
-    if (thread == nullptr) {
+    if (thread != nullptr) {
         LOG(ERROR) << "[Runner<" + name + ">] Repeated run a Runner!";
     } else {
-        thread = new std::thread([this]() {
-            while (running) {
-                task();
-            }
-        });
+        running = true;
+        thread = new std::thread([this]() { thread_func(); });
+        LOG(INFO) << "[Runner<" + name + ">] Start running...";
     }
 }
 
-void Runner::stop() {
-    running = false;
-    if (thread != nullptr) {
-        thread->join();
-        LOG(INFO) << "[Runner<" + name + ">] Stopped!";
+void Runner::thread_func() {
+    auto next_time = std::chrono::high_resolution_clock::now();
+    while (running) {
+        next_time += std::chrono::milliseconds(cycle_ms);
+        auto sleep_time = next_time - std::chrono::high_resolution_clock::now();
+        timespec ts = {
+            .tv_sec = duration_cast<seconds>(sleep_time).count(),
+            .tv_nsec = duration_cast<nanoseconds>(sleep_duration).count() % 1000000000,
+        };
+        nanosleep(&ts, nullptr);
+
+        task();
     }
 }
-
 #endif
 } // namespace run
 } // namespace robo
