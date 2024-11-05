@@ -16,8 +16,7 @@ struct MotorBinder {
 
 class Motor {
 public:
-    explicit Motor(const std::string &name): name(name) {}
-    explicit Motor() {}
+    explicit Motor(const std::string &name = "virtual"): name(name) {}
     ~Motor() {
         if (!isBound()) {
             delete angle;
@@ -50,7 +49,7 @@ public:
     }
 
 private:
-    const std::string name {"virtual"};
+    const std::string name;
     bool is_bound {false};
     float *angle {new float {0.0f}};
     float *speed {new float {0.0f}};
