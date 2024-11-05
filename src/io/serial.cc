@@ -36,7 +36,7 @@ bool Serial::isConnected() {
     }
 }
 
-int Serial::read(char *data) {
+int Serial::read(uint8_t *data) {
     try {
         int n;
         if (eol != "") {
@@ -56,7 +56,7 @@ int Serial::read(char *data) {
     }
 }
 
-bool Serial::send(const char *message, const int len) {
+bool Serial::send(const uint8_t *message, const int len) {
     try {
         int n = serial.write((const uint8_t *)message, len);
         if (n == len) {

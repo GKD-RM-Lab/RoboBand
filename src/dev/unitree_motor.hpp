@@ -22,15 +22,28 @@ public:
     }
 
 private:
+    enum Error {
+        NORMAL = 0,
+        OVER_HEAT = 1,
+        OVER_CURRENT = 2,
+        OVER_VOLTAGE = 3,
+        ENCODER_FAULT = 4,
+        BUS_UNDER_VOLTAGE = 5,
+        WINDING_OVER_HEAT = 6,
+        RESERVED = 7,
+    };
+    static const std::array<std::string, 8> err_msg;
+
     const int id;
     const int dir;
     uint8_t send_msg[17] {0xFD, 0xEE, (uint8_t)((id << 4) + (1 << 3))};
     float speed {0.0f};
     float angle {0.0f};
     float angle_offset {0.0f};
-    int time_last {0};
+    int8_t temp {0};
+    Error err {NORMAL};
 
-    virtual bool unpack(const char *data, const int len) override;
+    virtual bool unpack(const uint8_t *data, const int len) override;
 };
 }
 }

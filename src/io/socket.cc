@@ -34,7 +34,7 @@ Socket::~Socket() {
     close(sockfd);
 }
 
-int Socket::read(std::tuple<in_addr_t, int> &key, char *data) {
+int Socket::read(std::tuple<in_addr_t, int> &key, uint8_t *data) {
     sockaddr_in cli_addr;
     socklen_t cli_addr_len = sizeof(cli_addr);
     auto len = recvfrom(sockfd, data, 256, MSG_WAITALL, (sockaddr *)&cli_addr, &cli_addr_len);
@@ -45,7 +45,7 @@ int Socket::read(std::tuple<in_addr_t, int> &key, char *data) {
     return len;
 }
 
-bool Socket::send(const std::tuple<in_addr_t, int> &key, const char *message, const int len) {
+bool Socket::send(const std::tuple<in_addr_t, int> &key, const uint8_t *message, const int len) {
     in_addr_t ip = std::get<0>(key);
     int port = std::get<1>(key);
 

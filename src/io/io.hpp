@@ -17,7 +17,7 @@ public:
     explicit Io(const std::string &name, const int buffer_size):
         name(name),
         buffer_size(buffer_size),
-        buffer(new char[buffer_size]) {
+        buffer(new uint8_t[buffer_size]) {
     }
     virtual ~Io() {
         delete[] buffer;
@@ -47,7 +47,7 @@ public:
 
 protected:
     const int buffer_size;
-    char *buffer;
+    uint8_t *buffer;
     std::atomic<bool> running {false};
 
     virtual void thread_func() = 0;
@@ -67,9 +67,9 @@ public:
 
     using key_type = Tkey;
 
-    std::map<Tkey, std::function<void (const char *, const int len)>> unpackers;
+    std::map<Tkey, std::function<void (const uint8_t *, const int len)>> unpackers;
 
-    virtual int read(Tkey &key, char *data) = 0;
+    virtual int read(Tkey &key, uint8_t *data) = 0;
 
 private:
     void thread_func() override {
@@ -102,9 +102,9 @@ public:
     }
     ~IoNoKey() override = default;
 
-    std::vector<std::function<bool (const char *, const int len)>> unpackers;
+    std::vector<std::function<bool (const uint8_t *, const int len)>> unpackers;
 
-    virtual int read(char *data) = 0;
+    virtual int read(uint8_t *data) = 0;
 
 private:
     void thread_func() override {

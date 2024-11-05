@@ -12,8 +12,8 @@ public:
     explicit Serial(const std::string &name, const int buffer_size, const int baudrate, const int timeout_ms, const std::string &eol = "");
     ~Serial() override = default;
 
-    int read(char *data) override;
-    bool send(const char *message, const int len);
+    int read(uint8_t *data) override;
+    bool send(const uint8_t *message, const int len);
 
 private:
     const std::string eol;

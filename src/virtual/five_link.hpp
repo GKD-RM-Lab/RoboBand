@@ -16,8 +16,13 @@ public:
         name(name) {}
     ~FiveLink() = default;
 
-    float l;
-    float theta_l;
+    const float l_a;
+    const float l_b;
+    const float l_c;
+    const std::string name;
+
+    Motor motor1 {"motor1 in five_link(" + name + ")"};
+    Motor motor2 {"motor2 in five_link(" + name + ")"};
 
     void bind(const MotorBinder &binder1, const MotorBinder &binder2);
     void update();
@@ -26,21 +31,16 @@ public:
     void setForce(float F_n, float tau_j);
 
 private:
-    const float l_a;
-    const float l_b;
-    const float l_c;
-    const std::string name {"virtual"};
+    float l {0.0f};
+    float theta_l {0.0f};
 
-    Motor motor1 {"motor1 in five_link(" + name + ")"};
-    Motor motor2 {"motor2 in five_link(" + name + ")"};
-
-    float varphi_1;
-    float varphi_2;
-    float varphi_B_1;
-    float x_B_2;
-    float y_B_2;
-    float x_C;
-    float y_C;
+    float varphi_1 {0.0f};
+    float varphi_2 {0.0f};
+    float varphi_B_1 {0.0f};
+    float x_B_2 {0.0f};
+    float y_B_2 {0.0f};
+    float x_C {0.0f};
+    float y_C {0.0f};
     Eigen::Matrix<float, 2, 2> jacobian_trans;
 
     void forward_solve();

@@ -13,8 +13,8 @@ public:
     explicit Socket(const std::string &name, const int port, const int buffer_size, const float timeout_ms);
     ~Socket() override;
 
-    int read(std::tuple<in_addr_t, int> &key, char *data) override;
-    bool send(const std::tuple<in_addr_t, int> &key, const char *message, const int len);
+    int read(std::tuple<in_addr_t, int> &key, uint8_t *data) override;
+    bool send(const std::tuple<in_addr_t, int> &key, const uint8_t *message, const int len);
 
 private:
     int sockfd;

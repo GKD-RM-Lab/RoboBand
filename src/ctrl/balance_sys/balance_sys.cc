@@ -81,7 +81,7 @@ void BalanceSys::ctrlLoop() {
     /*Data d = { 1, 0, { state_ref(0), state_ref(2), state_ref(4), state_ref(6), state_ref(8), ctrl_vec(0), ctrl_vec(1), ctrl_vec(2), ctrl_vec(3) } };*/
     Data d = { 1, 0, { state_ref(0) * K(0, 0), state_ref(2) * K(0, 2), state_ref(4) * K(0, 4), state_ref(6) * K(0, 6), state_ref(8) * K(0, 8), ctrl_vec(0), ctrl_vec(1), ctrl_vec(2), ctrl_vec(3) } };
     /*Data d = { 1, 0, { state_ref(0) * K(2, 0), state_ref(2) * K(2, 2), state_ref(4) * K(2, 4), state_ref(6) * K(2, 6), state_ref(8) * K(2, 8), ctrl_vec(0), ctrl_vec(1), ctrl_vec(2), ctrl_vec(3) } };*/
-    plot.send(std::make_tuple(ip, 14514), (char *)&d, sizeof(d));
+    plot.send(std::make_tuple(ip, 14514), (uint8_t *)&d, sizeof(d));
     /*LOG(INFO) << "state: " << state_ref(0) << "," << state_ref(2) << "," << state_ref(4) << "," << state_ref(6) << "," << state_ref(8) << ", tau: " << ctrl_vec(0) << "," << ctrl_vec(1) << "," << ctrl_vec(2) << "," << ctrl_vec(3);*/
     /*LOG(INFO) << "state dot: " << state_ref(1) << "," << state_ref(3) << "," << state_ref(5) << "," << state_ref(7) << "," << state_ref(9) << ", tau: " << ctrl_vec(0) << "," << ctrl_vec(1) << "," << ctrl_vec(2) << "," << ctrl_vec(3);*/
     /*LOG(INFO) << "contribute: " << state_ref(0) * K(2, 0) << "," << state_ref(2) * K(2, 2) << "," << state_ref(4) * K(2, 4) << "," << state_ref(6) * K(2, 6) << "," << state_ref(8) * K(2, 8);*/
