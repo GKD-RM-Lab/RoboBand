@@ -11,7 +11,7 @@ namespace robo {
 namespace ctrl {
 class BalanceSys: public Ctrl{
 public:
-    explicit BalanceSys(const std::string &name, const toml::table &config);
+    explicit BalanceSys(const toml::table &config, const std::string &name = "balance_sys");
     ~BalanceSys() override = default;
 
     robo::vir::Imu imu;

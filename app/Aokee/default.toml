@@ -1,0 +1,8 @@
+robot = "Aokee"
+
+[io]
+rs485 = "/dev/serial/by-id/usb-Corecloud_Corecloud_Device-if00"
+
+[ctrl.chassis]
+cycle_ms = 1
+

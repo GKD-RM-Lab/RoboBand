@@ -1,5 +1,6 @@
 #include "robot_create.hpp"
 #include "lqr_sim/lqr_sim.hpp"
+#include "Aokee/Aokee.hpp"
 
 extern std::string project_path;
 
@@ -32,7 +33,11 @@ Robot *robotCreate(const std::string &user_config_path) {
             util::mergeConfig(user_config, config);
             robot = new LqrSim(config);
 #else
-       if (robot_name == "default") {
+       if (robot_name == "Aokee") {
+            LOG(DEBUG) << "Robot name: " << robot_name;
+            config = toml::parse_file(project_path + "/app/Aokee/default.toml");
+            util::mergeConfig(user_config, config);
+            robot = new Aokee(config);
 #endif
         } else if (robot_name == "err") {
             LOG(ERROR) << R"(The value paired with the key "robot" in your config ")" + user_config_path + R"(" is not a string!)";

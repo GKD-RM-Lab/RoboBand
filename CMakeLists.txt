@@ -16,7 +16,7 @@ include(crcpp)
 include(serial)
 include(easyloggingpp)
 
-set(USE_WEBOTS ON)
+set(USE_WEBOTS OFF)
 if(USE_WEBOTS)
     add_definitions(-DUSE_WEBOTS)
     include_directories($ENV{WEBOTS_HOME}/include/controller/cpp)

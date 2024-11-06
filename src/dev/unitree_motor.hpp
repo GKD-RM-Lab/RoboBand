@@ -8,7 +8,7 @@ namespace robo {
 namespace dev {
 class UnitreeMotor: public Dev<robo::io::Serial> {
 public:
-    explicit UnitreeMotor(robo::io::Serial &io_serial, const std::string &motor_name, const int id, const int dir);
+    explicit UnitreeMotor(robo::io::Serial &io_serial, const std::string &motor_name, const uint8_t id, const int dir);
     ~UnitreeMotor() override = default;
 
     robo::vir::MotorBinder binder {
@@ -18,25 +18,62 @@ public:
     };
 
     void setTorque(float torque);
-    void setAngelOffset(float angle_offset_) {
-    }
+    void setAngelOffset(float angle_offset_);
 
 private:
+    enum Mode {
+        DEFALUT           = 0,
+        FOC               = 1,
+        ENCODER_CALIBRATE = 2,
+    };
     enum Error {
-        NORMAL = 0,
-        OVER_HEAT = 1,
-        OVER_CURRENT = 2,
-        OVER_VOLTAGE = 3,
-        ENCODER_FAULT = 4,
+        NORMAL            = 0,
+        OVER_HEAT         = 1,
+        OVER_CURRENT      = 2,
+        OVER_VOLTAGE      = 3,
+        ENCODER_FAULT     = 4,
         BUS_UNDER_VOLTAGE = 5,
         WINDING_OVER_HEAT = 6,
-        RESERVED = 7,
+        RESERVED          = 7,
     };
     static const std::array<std::string, 8> err_msg;
 
-    const int id;
+    const uint8_t id;
     const int dir;
-    uint8_t send_msg[17] {0xFD, 0xEE, (uint8_t)((id << 4) + (1 << 3))};
+
+    static const uint16_t HEAD = 0xFDEE;
+
+    struct Info {
+        uint8_t id: 4;
+        Mode mode: 3  = FOC;
+        uint8_t reserved: 1;
+    } __attribute__((packed));
+    struct Command {
+        int16_t torque_set;
+        int16_t speed_set;
+        int32_t angle_set;
+        int16_t k_pos_set;
+        int16_t k_spd_set;
+    } __attribute__((packed));
+    struct Feedback {
+        int16_t torque_fbk;
+        int16_t speed_fbk;
+        int32_t angle_fbk;
+        int8_t temp_fbk;
+        Error err: 3 = NORMAL;
+        uint16_t force_fbk: 12;
+        uint8_t reserved: 1;
+    } __attribute__((packed));
+
+    template <typename T>
+    struct Data {
+        const uint16_t head = HEAD;
+        Info info;
+        T msg;
+        uint16_t CRC;
+    } __attribute__((packed));
+
+    Data<Command> send_data;
     float speed {0.0f};
     float angle {0.0f};
     float angle_offset {0.0f};

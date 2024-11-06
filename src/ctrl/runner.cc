@@ -68,8 +68,8 @@ void Runner::thread_func() {
         next_time += std::chrono::milliseconds(cycle_ms);
         auto sleep_time = next_time - std::chrono::high_resolution_clock::now();
         timespec ts = {
-            .tv_sec = duration_cast<seconds>(sleep_time).count(),
-            .tv_nsec = duration_cast<nanoseconds>(sleep_duration).count() % 1000000000,
+            .tv_sec = duration_cast<std::chrono::seconds>(sleep_time).count(),
+            .tv_nsec = duration_cast<std::chrono::nanoseconds>(sleep_time).count() % 1000000000,
         };
         nanosleep(&ts, nullptr);
 

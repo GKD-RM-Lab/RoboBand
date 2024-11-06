@@ -6,7 +6,7 @@
 using namespace robo::util;
 namespace robo {
 namespace ctrl {
-BalanceSys::BalanceSys(const std::string &name, const toml::table &config):
+BalanceSys::BalanceSys(const toml::table &config, const std::string &name):
     Ctrl(name, getValue<int>(config, "cycle_ms")),
     CYCLE_MS(getValue<int>(config, "cycle_ms")),
     RADIUS_WHEEL(getValue<float>(config, "radius_wheel")),
