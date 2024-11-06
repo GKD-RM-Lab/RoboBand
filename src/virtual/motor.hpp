@@ -47,6 +47,14 @@ public:
     float getSpeed() const {
         return *speed;
     }
+    friend float operator>>(float torque, Motor &motor) {
+        motor.setTorque(torque);
+        return torque;
+    }
+    friend float *operator>>(float *torque, Motor &motor) {
+        motor.setTorque(*torque);
+        return torque++;
+    }
 
 private:
     const std::string name;
