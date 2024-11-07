@@ -7,16 +7,16 @@ using namespace robo::util;
 namespace robo {
 namespace ctrl {
 BalanceSys::BalanceSys(const toml::table &config, const std::string &name):
-    Ctrl(name, getValue<int>(config, "cycle_ms")),
-    CYCLE_MS(getValue<int>(config, "cycle_ms")),
-    RADIUS_WHEEL(getValue<float>(config, "radius_wheel")),
-    S_REF_MAX(getValue<float>(config, "s_ref_max")),
-    PHI_REF_MAX(getValue<float>(config, "phi_ref_max")),
-    THETA_L_REF_MAX(getValue<float>(config, "theta_l_ref_max")),
-    THETA_B_REF_MAX(getValue<float>(config, "theta_b_ref_max")),
-    WHEEL_TORQUE_MAX(getValue<float>(config, "wheel_torque_max")),
-    JOINT_TORQUE_MAX(getValue<float>(config, "joint_torque_max")),
-    K(Eigen::Map<Eigen::Matrix<float, 10, 4>>(getArray<float, 4 * 10>(config, "K").data()).transpose()) {
+    Ctrl(name,       config > Key<int>("cycle_ms")),
+    CYCLE_MS        (config > Key<int>("cycle_ms")),
+    RADIUS_WHEEL    (config > Key<float>("radius_wheel")),
+    S_REF_MAX       (config > Key<float>("s_ref_max")),
+    PHI_REF_MAX     (config > Key<float>("phi_ref_max")),
+    THETA_L_REF_MAX (config > Key<float>("theta_l_ref_max")),
+    THETA_B_REF_MAX (config > Key<float>("theta_b_ref_max")),
+    WHEEL_TORQUE_MAX(config > Key<float>("wheel_torque_max")),
+    JOINT_TORQUE_MAX(config > Key<float>("joint_torque_max")),
+    K(Eigen::Map<Eigen::Matrix<float, 10, 4>>((config > Key<float, 4 * 10>("K")).data()).transpose()) {
 }
 
 void BalanceSys::ctrlLoop() {

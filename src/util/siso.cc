@@ -1,10 +1,10 @@
 #include <numbers>
 
-#include "util/siso_sys.hpp"
+#include "util/siso.hpp"
 
 namespace robo {
 namespace util {
-auto rad_format = limit(std::numbers::pi_v<float>);
+const SisoFunc rad_format = limit(std::numbers::pi_v<float>);
 
 Pid::Pid(const PidParam& param): 
     Pid(param.kp,

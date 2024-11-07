@@ -63,17 +63,32 @@ void Runner::run() {
 }
 
 void Runner::thread_func() {
-    auto next_time = std::chrono::high_resolution_clock::now();
+    using namespace std::chrono;
+    using hrc = high_resolution_clock;
+
+    auto next_time = hrc::now();
+    auto cycle_time = duration_cast<nanoseconds>(milliseconds(cycle_ms));
+    auto cycle_start = next_time;
     while (running) {
-        next_time += std::chrono::milliseconds(cycle_ms);
-        auto sleep_time = next_time - std::chrono::high_resolution_clock::now();
+        auto elapsed = duration_cast<nanoseconds>(next_time.time_since_epoch());
+        next_time = hrc::time_point(cycle_time * (elapsed / cycle_time + 1) + elapsed % cycle_time);
+        auto sleep_time = next_time - hrc::now();
         timespec ts = {
-            .tv_sec = duration_cast<std::chrono::seconds>(sleep_time).count(),
-            .tv_nsec = duration_cast<std::chrono::nanoseconds>(sleep_time).count() % 1000000000,
+            .tv_sec = duration_cast<seconds>(sleep_time).count(),
+            .tv_nsec = duration_cast<nanoseconds>(sleep_time).count() % 1000000000,
         };
         nanosleep(&ts, nullptr);
 
         task();
+
+        auto cycle_end = hrc::now();
+        auto task_duration = duration_cast<nanoseconds>(cycle_end - cycle_start);
+        if (task_duration >= cycle_time) {
+            LOG(ERROR) << "[Runner<" + name + ">] Task execution time exceeded cycle time ("
+                       << duration_cast<nanoseconds>(task_duration).count() << "/"
+                       << duration_cast<nanoseconds>(cycle_time).count() << " ns)";
+        }
+        cycle_start = hrc::now();
     }
 }
 #endif

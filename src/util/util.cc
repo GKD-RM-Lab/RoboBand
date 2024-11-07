@@ -28,6 +28,9 @@ const toml::table &getTable(const toml::table &table, const std::string &key) {
         return table;
     }
 }
+const toml::table &operator>(const toml::table &table, const std::string &key) {
+    return getTable(table, key);
+}
 
 in_addr_t to_in_addr(const std::string &host) {
     in_addr_t ip;

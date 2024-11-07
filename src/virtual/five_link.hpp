@@ -16,6 +16,7 @@ public:
         name(name) {}
     ~FiveLink() = default;
 
+    static constexpr std::size_t link_param_num = 3;
     const float l_a;
     const float l_b;
     const float l_c;

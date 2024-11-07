@@ -29,6 +29,7 @@ inline T abs_limit(T x, const T lim) {
 void mergeConfig(toml::table& user_config, toml::table& default_config);
 
 const toml::table &getTable(const toml::table &table, const std::string &key);
+const toml::table &operator>(const toml::table &table, const std::string &key);
 
 template <typename T>
 T getValue(const toml::table &table, const std::string &key) {
@@ -43,9 +44,9 @@ T getValue(const toml::table &table, const std::string &key) {
     }
 }
 
-template <typename T, std::size_t n>
-std::array<T, n> getArray(const toml::table &table, const std::string &key) {
-    std::array<T, n> arr;
+template <typename T, std::size_t N>
+std::array<T, N> getArray(const toml::table &table, const std::string &key) {
+    std::array<T, N> arr;
     auto tarr = table[key].as_array();
 
     if (!tarr) {
@@ -54,8 +55,8 @@ std::array<T, n> getArray(const toml::table &table, const std::string &key) {
         return arr;
     }
 
-    if (auto tarr_size = tarr->size(); tarr_size!= n) {
-        LOG(ERROR) << R"(Array named ")" + key + R"(" required )" << n << " elements, but you gave " << tarr_size << ".";
+    if (auto tarr_size = tarr->size(); tarr_size!= N) {
+        LOG(ERROR) << R"(Array named ")" + key + R"(" required )" << N << " elements, but you gave " << tarr_size << ".";
         throw std::runtime_error("Wrong configuration file.");
         return arr;
     }
@@ -93,6 +94,46 @@ std::array<T, n> getArray(const toml::table &table, const std::string &key) {
     return arr;
 }
 
+template <typename T>
+constexpr decltype(auto) is_param() {
+    return std::is_same_v<T, int> ||
+           std::is_same_v<T, float> ||
+           std::is_same_v<T, std::string> ||
+           std::is_same_v<T, toml::table>;
+};
+template <typename T>
+using param_t = typename std::enable_if_t<is_param<T>()>;
+
+template <typename T = typename toml::table, std::size_t N = 0, typename = param_t<T>>
+struct Key {
+    Key(const std::string &key): key(key) {}
+    using type_T = T;
+    static constexpr std::size_t type_N = N;
+    using type = std::array<T, N>;
+    const std::string key;
+};
+template <typename T>
+struct Key<T, 0> {
+    Key(const std::string &key): key(key) {}
+    using type_T = T;
+    static constexpr std::size_t type_N = 0;
+    using type = T;
+    const std::string key;
+};
+
+template <typename K, typename = std::enable_if_t<std::is_base_of_v<K, Key<typename K::type_T, K::type_N>>>>
+decltype(auto) operator>(const toml::table &table, const K key) {
+    if constexpr (std::is_same_v<typename K::type, int> ||
+                  std::is_same_v<typename K::type, float> ||
+                  std::is_same_v<typename K::type, std::string>) {
+        return getValue<typename K::type>(table, key.key);
+    } else if constexpr (std::is_same_v<typename K::type_T, toml::table>) {
+        return getTable<typename K::type>(table, key.key);
+    } else {
+        return getArray<typename K::type_T, K::type_N>(table, key.key);
+    }
+}
+
 /**io**/
 in_addr_t to_in_addr(const std::string &host);
 
@@ -104,4 +145,6 @@ template<typename T>
 struct is_streamable<T, std::void_t<decltype(std::declval<std::ostream&>() << std::declval<T>())>> : std::true_type {};
 }
 }
+
+using robo::util::operator>;
 
