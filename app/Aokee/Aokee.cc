@@ -20,7 +20,6 @@ void Aokee::bindVirtualDev() {
 }
 
 void Aokee::devInit() {
-
 }
 }
 

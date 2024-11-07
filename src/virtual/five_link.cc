@@ -13,20 +13,13 @@ void FiveLink::update() {
 
     forward_solve();
     jacobian_calc();
-}
 
-std::array<float, 2> FiveLink::getPosition() {
-    return {l, theta_l};
-}
-
-std::array<float, 2> FiveLink::getSpeed() {
     Eigen::Vector<float, 2> joint;
     Eigen::Vector<float, 2> task;
-
     joint << varphi_1, varphi_2;
     task = jacobian_trans * joint;
-
-    return {task(0), task(1)};
+    dot_l = task(0);
+    dot_theta_l = task(1);
 }
 
 void FiveLink::setForce(float F_n, float tau_j) {
@@ -36,8 +29,8 @@ void FiveLink::setForce(float F_n, float tau_j) {
     force_virtual << F_n, tau_j;
     force_actual = jacobian_trans * force_virtual;
 
-    motor1.setTorque(force_actual(0));
-    motor2.setTorque(force_actual(1));
+    force_actual(0) >> motor1;
+    force_actual(1) >> motor2;
 }
 
 void FiveLink::forward_solve() {

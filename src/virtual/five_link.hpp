@@ -22,19 +22,19 @@ public:
     const float l_c;
     const std::string name;
 
+    float l {0.0f};
+    float dot_l {0.0f};
+    float theta_l {0.0f};
+    float dot_theta_l {0.0f};
+
     Motor motor1 {"motor1 in five_link(" + name + ")"};
     Motor motor2 {"motor2 in five_link(" + name + ")"};
 
     void bind(const MotorBinder &binder1, const MotorBinder &binder2);
     void update();
-    std::array<float, 2> getPosition();
-    std::array<float, 2> getSpeed();
     void setForce(float F_n, float tau_j);
 
 private:
-    float l {0.0f};
-    float theta_l {0.0f};
-
     float varphi_1 {0.0f};
     float varphi_2 {0.0f};
     float varphi_B_1 {0.0f};

@@ -3,8 +3,9 @@
 #include <functional>
 #include <string>
 #include <iomanip>
-
 #include <easylogging++.h>
+
+#include "util/siso.hpp"
 
 namespace robo {
 namespace vir {
