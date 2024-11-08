@@ -15,7 +15,7 @@ private:
     robo::ctrl::WheelLeggedChassis<vir::FiveLink> chassis;
 
     robo::io::Serial rs485;
-    robo::dev::UnitreeMotor motor;
+    robo::dev::UnitreeMotor motor[6];
     
     void bindVirtualDev() override;
     void devInit() override;

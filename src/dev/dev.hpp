@@ -17,6 +17,7 @@ template <typename IO>
 class Dev<IO, typename std::enable_if<std::is_base_of<robo::io::IoKey<typename IO::key_type>, IO>::value>::type> {
 public:
     explicit Dev(const std::string &name, IO &io, const typename IO::key_type io_key):
+        name(name),
         io(io),
         io_key(io_key) {
         auto it = io.unpackers.find(io_key);
@@ -30,7 +31,9 @@ public:
             io.unpackers.emplace(io_key, [this](const uint8_t *data, const int len) -> bool { return unpack(data, len); });
         }
     }
+    Dev(const Dev &) = delete;
     virtual ~Dev() = default;
+    
 
     const typename IO::key_type getIoKey() {
         return io_key;
@@ -50,9 +53,11 @@ template <typename IO>
 class Dev<IO, typename std::enable_if<std::is_base_of<robo::io::IoNoKey, IO>::value>::type> {
 public:
     explicit Dev(const std::string &name, IO &io):
+        name(name),
         io(io) {
         io.unpackers.push_back([this](const uint8_t *data, const int len) -> bool { return unpack(data, len); });
     }
+    Dev(const Dev &) = delete;
     virtual ~Dev() = default;
 
     const std::string name;
@@ -72,6 +77,7 @@ public:
         webots_io(webots_io) {
         webots_io.updaters.push_back([this]() { update(); });
     }
+    Dev(const Dev &) = delete;
     virtual ~Dev() = default;
 
 protected:

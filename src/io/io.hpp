@@ -105,6 +105,7 @@ public:
     std::vector<std::function<bool (const uint8_t *, const int len)>> unpackers;
 
     virtual int read(uint8_t *data) = 0;
+    virtual void readDirtyHook() = 0;
 
 private:
     void thread_func() override {
@@ -123,6 +124,7 @@ private:
                 }
                 if (!is_unpacked) {
                     LOG(WARNING) << "[IO<" + name + ">] The data read does not have a matching unpacker.";
+                    readDirtyHook();
                 }
             }
         }

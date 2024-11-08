@@ -13,6 +13,7 @@ public:
     ~Serial() override = default;
 
     int read(uint8_t *data) override;
+    void readDirtyHook() override;
     bool send(const uint8_t *message, const int len);
 
 private:

@@ -41,7 +41,9 @@ private:
     const uint8_t id;
     const int dir;
 
-    static const uint16_t HEAD = 0xFDEE;
+    static constexpr uint8_t SEND_HEAD[2] {0xfe, 0xee};
+    static constexpr uint8_t RESV_HEAD[2] {0xfd, 0xee};
+    static constexpr float RATIO {6.33f};
 
     struct Info {
         uint8_t id: 4;
@@ -67,7 +69,7 @@ private:
 
     template <typename T>
     struct Data {
-        const uint16_t head = HEAD;
+        uint8_t head[2];
         Info info;
         T msg;
         uint16_t CRC;

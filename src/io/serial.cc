@@ -1,4 +1,6 @@
+#include <cstdio>
 #include <exception>
+#include <string>
 
 #include "io/serial.hpp"
 
@@ -54,6 +56,13 @@ int Serial::read(uint8_t *data) {
         LOG(ERROR) << "[IO<" + name + ">] An exception was thrown: " << err.what();
         return -1;
     }
+}
+
+void Serial::readDirtyHook() {
+    // TODO
+    serial.flushOutput();
+    uint8_t data;
+    serial.read(&data, 1);
 }
 
 bool Serial::send(const uint8_t *message, const int len) {
