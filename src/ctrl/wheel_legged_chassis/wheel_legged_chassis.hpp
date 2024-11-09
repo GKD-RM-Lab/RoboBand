@@ -49,10 +49,10 @@ public:
         
         0.05f >> wheel[0];
         0.3f >> leg[0].motor1;
-        /*0.3f >> leg[0].motor2;*/
-        /*0.05f >> wheel[1];*/
-        /*0.3f >> leg[1].motor1;*/
-        /*0.3f >> leg[1].motor2;*/
+        0.3f >> leg[0].motor2;
+        0.05f >> wheel[1];
+        0.3f >> leg[1].motor1;
+        0.3f >> leg[1].motor2;
     }
 
 private:

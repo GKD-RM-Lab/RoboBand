@@ -14,3 +14,6 @@ if(result)
     set_target_properties(${PROJECT_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
+add_custom_command(TARGET ${PROJECT_NAME}
+    COMMAND sudo setcap CAP_SYS_NICE+eip ${CMAKE_SOURCE_DIR}/build/app/${PROJECT_NAME})
+

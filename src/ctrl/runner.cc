@@ -1,10 +1,7 @@
 #include <easylogging++.h>
-#include <ctime>
-#include <cerrno>
-#include <chrono>
-#include <thread>
 
 #include "ctrl/runner.hpp"
+#include "util/util.hpp"
 
 namespace robo {
 namespace run {
@@ -60,35 +57,39 @@ void Runner::run() {
     } else {
         running = true;
         thread = new std::thread([this]() { thread_func(); });
+
         LOG(INFO) << "[Runner<" + name + ">] Start running...";
     }
 }
 
 void Runner::thread_func() {
-    using namespace std::chrono;
-    using hrc = high_resolution_clock;
+    util::setThisThreadRealTime(cycle_ms * util::Ms<util::Ns>);
 
-    auto next_time = hrc::now();
-    auto cycle_time = duration_cast<nanoseconds>(milliseconds(cycle_ms));
+    timespec t_set;
+    clock_gettime(CLOCK_MONOTONIC, &t_set);
     while (running) {
-        // TODO if > then error
-        next_time += cycle_time;
-        auto sleep_time = next_time - hrc::now();
-        if (sleep_time.count() <= 0) {
-            LOG(ERROR) << "[Runner<" + name + ">] Task execution time exceeded cycle time ("
-                       << duration_cast<nanoseconds>(cycle_time - sleep_time).count() << "/"
-                       << duration_cast<nanoseconds>(cycle_time).count() << " ns)";
-            continue;
-        }
-        timespec ts = {
-            .tv_sec = duration_cast<seconds>(sleep_time).count(),
-            .tv_nsec = duration_cast<nanoseconds>(sleep_time).count() % 1000000000,
-        };
-        nanosleep(&ts, nullptr);
+        
+        timespec t_start;
+        clock_gettime(CLOCK_MONOTONIC, &t_start);
 
         task();
+
+        timespec t_now;
+        clock_gettime(CLOCK_MONOTONIC, &t_now);
+        util::incTime(t_set, cycle_ms * util::Ms<util::Ns>);
+        long t_duration = util::getTimeDuration(t_now, t_set);
+        if (t_duration <= 0) {
+            long t_task = util::getTimeDuration(t_start, t_now);
+            long t_exceed = cycle_ms * util::Ms<util::Ns> - t_duration;
+            util::incTime(t_set, t_exceed);
+            LOG(ERROR) << "[Runner<" + name + ">] Task execution time exceeded cycle time (" 
+                       << "task: " << t_task << "ns, " << "total: "
+                       << t_exceed - t_duration << "/" << cycle_ms * util::Ms<util::Ns> << "ns)";
+        }
+        clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t_set, nullptr);
     }
 }
 #endif
 } // namespace run
 } // namespace robo
+

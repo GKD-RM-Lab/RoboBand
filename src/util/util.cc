@@ -1,8 +1,56 @@
-#include <stdexcept>
+#include <ctime>
+#include <pthread.h>
+
 #include "util/util.hpp"
 
 namespace robo {
 namespace util {
+/**sys**/
+struct sched_attr {
+    __u32 size;
+
+    __u32 sched_policy;
+    __u64 sched_flags;
+
+    /* SCHED_NORMAL, SCHED_BATCH */
+    __s32 sched_nice;
+
+    /* SCHED_FIFO, SCHED_RR */
+    __u32 sched_priority;
+
+    /* SCHED_DEADLINE (nsec) */
+    __u64 sched_runtime;
+    __u64 sched_deadline;
+    __u64 sched_period;
+};
+
+int sched_setattr(pid_t pid, const struct sched_attr *attr, unsigned int flags)
+{
+    return syscall(__NR_sched_setattr, pid, attr, flags);
+}
+
+int sched_getattr(pid_t pid, struct sched_attr *attr, unsigned int size, unsigned int flags)
+{
+    return syscall(__NR_sched_getattr, pid, attr, size, flags);
+}
+
+int setThisThreadRealTime(long period_ns) {
+    struct sched_attr attr;
+
+    attr.size = sizeof(attr);
+    attr.sched_flags = 0;
+    attr.sched_nice = 0;
+    attr.sched_priority = 0;
+
+    attr.sched_policy = SCHED_DEADLINE;
+    attr.sched_runtime = period_ns / 1000 * 300;
+    attr.sched_deadline = period_ns / 1000 * 500;
+    attr.sched_period = period_ns;
+
+    return sched_setattr(syscall(SYS_gettid), &attr, 0);
+}
+
+/**toml**/
 void mergeConfig(toml::table& user_config, toml::table& default_config) {
     for (const auto& [key, value] : user_config) {
         if (auto* user_table = value.as_table()) {
@@ -32,6 +80,7 @@ const toml::table &operator>(const toml::table &table, const std::string &key) {
     return getTable(table, key);
 }
 
+/**io**/
 in_addr_t to_in_addr(const std::string &host) {
     in_addr_t ip;
     addrinfo hints, *res;

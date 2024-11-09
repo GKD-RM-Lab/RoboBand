@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctime>
 #include <iostream>
 #include <string>
 #include <array>
@@ -13,6 +14,32 @@
 
 namespace robo {
 namespace util {
+/**sys**/
+constexpr long Ns {1};
+
+template <long N = 1>
+constexpr long Us {1000 / N};
+
+template <long N = 1>
+constexpr long Ms {1000000 / N};
+
+template <long N = 1>
+constexpr long Sec {1000000000 / N};
+
+int setThisThreadRealTime(const long period_ns);
+
+inline void incTime(timespec &t, const long time_ns) {
+    t.tv_nsec += time_ns;
+    while (t.tv_nsec >= Sec<Ns>) {
+        t.tv_sec++;
+        t.tv_nsec -= Sec<Ns>;
+    }
+}
+
+inline long getTimeDuration(const timespec &t_start, const timespec &t_end) {
+    return (t_end.tv_nsec - t_start.tv_nsec) + (t_end.tv_sec - t_start.tv_sec) * Sec<Ns>;
+}
+
 /**math**/ 
 template <typename T>
 inline T abs_limit(T x, const T lim) {

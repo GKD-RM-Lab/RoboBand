@@ -124,6 +124,24 @@ private:
                 }
                 if (!is_unpacked) {
                     LOG(WARNING) << "[IO<" + name + ">] The data read does not have a matching unpacker.";
+                    printf("%x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x\r\n",
+                       buffer[0],
+                       buffer[1],
+                       buffer[2],
+                       buffer[3],
+                       buffer[4],
+                       buffer[5],
+                       buffer[6],
+                       buffer[7],
+                       buffer[8],
+                       buffer[9],
+                       buffer[10],
+                       buffer[11],
+                       buffer[12],
+                       buffer[13],
+                       buffer[14],
+                       buffer[15]
+                    );
                     readDirtyHook();
                 }
             }
