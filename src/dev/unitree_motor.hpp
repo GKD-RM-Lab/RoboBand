@@ -15,10 +15,12 @@ public:
         .setTorque = [this](float torque) { this->setTorque(torque); },
         .angle= &this->angle,
         .speed = &this->speed,
+        .actual = this,
     };
 
     void setTorque(float torque);
     void setAngelOffset(float angle_offset_);
+    void setAngel(float current_angle);
 
 private:
     enum Mode {

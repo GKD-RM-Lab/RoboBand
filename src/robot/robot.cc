@@ -2,15 +2,20 @@
 
 namespace robo {
 void Robot::run(std::atomic<bool>& running) {
+    bindVirtualDev();
+
 #ifdef USE_WEBOTS
-    for (auto ctrl: ctrls) {
+    for (auto &ctrl: ctrls) {
         ctrl->runner.bind(webots_io);
     }
 #endif
-    for (auto io: ios) {
+    for (auto &io: ios) {
         io->run();
     }
-    for (auto ctrl: ctrls) {
+
+    devInit();
+
+    for (auto &ctrl: ctrls) {
         ctrl->runner.run();
     }
 
@@ -20,10 +25,10 @@ void Robot::run(std::atomic<bool>& running) {
     while (running);
 #endif
 
-    for (auto ctrl: ctrls) {
+    for (auto &ctrl: ctrls) {
         ctrl->runner.stop();
     }
-    for (auto io: ios) {
+    for (auto &io: ios) {
         io->stop();
     }
 }

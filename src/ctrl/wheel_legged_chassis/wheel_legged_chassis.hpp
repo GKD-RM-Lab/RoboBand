@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iomanip>
 #include <toml++/toml.hpp>
 #include <eigen3/Eigen/Eigen>
 
@@ -47,12 +48,17 @@ public:
         /*leg[0].setForce(F_n(0), 0.0f);*/
         /*leg[1].setForce(F_n(1), 0.0f);*/
         
-        0.05f >> wheel[0];
-        0.3f >> leg[0].motor1;
-        0.3f >> leg[0].motor2;
-        0.05f >> wheel[1];
-        0.3f >> leg[1].motor1;
-        0.3f >> leg[1].motor2;
+        0.0f >> wheel[0];
+        0.1f >> leg[0].motor1;
+        0.1f >> leg[0].motor2;
+        0.0f >> wheel[1];
+        0.1f >> leg[1].motor1;
+        0.1f >> leg[1].motor2;
+        std::cout << std::setprecision(3)
+                  << leg[0].motor1.getAngle() << ", "
+                  << leg[0].motor2.getAngle() << ", "
+                  << leg[1].motor1.getAngle() << ", "
+                  << leg[1].motor2.getAngle() << ", OK." << std::endl;
     }
 
 private:

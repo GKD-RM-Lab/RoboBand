@@ -5,48 +5,51 @@
 #include <iomanip>
 #include <easylogging++.h>
 
-#include "util/siso.hpp"
-
 namespace robo {
 namespace vir {
 struct MotorBinder {
     std::function<void (float)> setTorque;
     float *angle;
     float *speed;
+    void *actual;
 };
 
 class Motor {
 public:
-    explicit Motor(const std::string &name = "virtual"): name(name) {}
+    explicit Motor(const std::string &name = "virtual"): _name(name) {}
     ~Motor() {
         if (!isBound()) {
-            delete angle;
-            delete speed;
+            delete _angle;
+            delete _speed;
         }
     }
 
     std::function<void (float)> setTorque = [this](float torque) { this->setTorqueDefault(torque); };
 
     bool isBound() const {
-        return is_bound;
+        return (_actual != nullptr);
     }
     void bind(const MotorBinder &binder) {
         if (!isBound()) {
-            delete angle;
-            delete speed;
+            delete _angle;
+            delete _speed;
         } else {
-            LOG(WARNING) << "[Motor<" + name + ">] Binding repeatedly!";
+            LOG(WARNING) << "[Motor<" + _name + ">] Binding repeatedly!";
         }
         setTorque = binder.setTorque;
-        angle = binder.angle;
-        speed = binder.speed;
-        is_bound = true;
+        _angle = binder.angle;
+        _speed = binder.speed;
+        _actual = binder.actual;
+    }
+    template <typename T>
+    T *actual() const {
+        return (T *)_actual;
     }
     float getAngle() const {
-        return *angle;
+        return *_angle;
     }
     float getSpeed() const {
-        return *speed;
+        return *_speed;
     }
     friend float operator>>(float torque, Motor &motor) {
         motor.setTorque(torque);
@@ -58,13 +61,13 @@ public:
     }
 
 private:
-    const std::string name;
-    bool is_bound {false};
-    float *angle {new float {0.0f}};
-    float *speed {new float {0.0f}};
+    const std::string _name;
+    void *_actual {nullptr};
+    float *_angle {new float {0.0f}};
+    float *_speed {new float {0.0f}};
 
     void setTorqueDefault(float torque) {
-        LOG(INFO) << std::setprecision(3) << "[Motor<" + name + ">] set torque: " << torque << "Nm.";
+        LOG(INFO) << std::setprecision(3) << "[Motor<" + _name + ">] set torque: " << torque << "Nm.";
     }
 };
 }

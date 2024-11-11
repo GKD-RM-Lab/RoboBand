@@ -1,4 +1,5 @@
 #include "virtual/five_link.hpp"
+#include "util/siso.hpp"
 
 namespace robo {
 namespace vir {
@@ -22,7 +23,7 @@ void FiveLink::update() {
     dot_theta_l = task(1);
 }
 
-void FiveLink::setForce(float F_n, float tau_j) {
+void FiveLink::setForce(const float F_n, const float tau_j) {
     Eigen::Vector<float, 2> force_virtual;
     Eigen::Vector<float, 2> force_actual;
 

@@ -32,6 +32,10 @@ void UnitreeMotor::setTorque(float torque) {
         torque = 0.0f;
     }
 
+    if (id == 3) {
+        LOG(INFO) << speed << ", " << torque;
+    }
+
     send_data.msg.torque_set = (int16_t)(util::abs_limit(torque * dir, 127.9f) * 256.0f);
     send_data.CRC = CRC::Calculate(&send_data, sizeof(send_data) - sizeof(send_data.CRC), CRC::CRC_16_KERMIT());
 
@@ -39,7 +43,11 @@ void UnitreeMotor::setTorque(float torque) {
 }
 
 void UnitreeMotor::setAngelOffset(float angle_offset_) {
-    angle_offset = dir * angle_offset_;
+    angle_offset = angle_offset_;
+}
+
+void UnitreeMotor::setAngel(float current_angle) {
+    angle_offset = angle - current_angle;
 }
 
 bool UnitreeMotor::unpack(const uint8_t *data, const int len) {
@@ -52,8 +60,8 @@ bool UnitreeMotor::unpack(const uint8_t *data, const int len) {
         return false;
     }
 
-    angle = fbk->msg.angle_fbk / 32768.0f * 2.0f * std::numbers::pi_v<float> / RATIO;
-    speed = fbk->msg.speed_fbk / 256.0f * 2.0f * std::numbers::pi_v<float> / RATIO;
+    angle = fbk->msg.angle_fbk / 32768.0f * 2.0f * std::numbers::pi_v<float> / RATIO * dir - angle_offset;
+    speed = fbk->msg.speed_fbk / 256.0f * 2.0f * std::numbers::pi_v<float> / RATIO * dir;
     temp = fbk->msg.temp_fbk;
 
     err = fbk->msg.err;

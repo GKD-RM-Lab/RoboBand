@@ -32,7 +32,7 @@ public:
 
     void bind(const MotorBinder &binder1, const MotorBinder &binder2);
     void update();
-    void setForce(float F_n, float tau_j);
+    void setForce(const float F_n, const float tau_j);
 
 private:
     float varphi_1 {0.0f};

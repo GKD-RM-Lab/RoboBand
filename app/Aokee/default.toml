@@ -1,5 +1,13 @@
 robot = "Aokee"
 
+motor_dir = [1, -1, 1, -1, 1, -1]
+pid_retract = [0.3, 0, 0, 0, 1.0]
+retract_speed = 1.5
+motor_stop_speed = 0.02
+retract_ctrl_cycle_ms = 5
+retract_time_min_ms = 500
+joint_limit_angle = 3.49
+
 [io]
 rs485 = "/dev/serial/by-id/usb-Corecloud_Corecloud_Device-if00"
 

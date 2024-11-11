@@ -59,6 +59,11 @@ inline T abs_limit(T x, const T lim) {
     return x;
 }
 
+template <typename T>
+inline T abs(T x) {
+    return (x < 0 ? -x : x);
+}
+
 /**toml**/
 void mergeConfig(toml::table& user_config, toml::table& default_config);
 
