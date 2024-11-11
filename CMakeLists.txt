@@ -21,6 +21,9 @@ include(implot)
 
 set(USE_WEBOTS OFF)
 
+include_directories(${CMAKE_SOURCE_DIR})
+
+add_subdirectory(watch)
 add_subdirectory(src)
 add_subdirectory(app)
 

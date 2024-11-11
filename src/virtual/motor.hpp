@@ -3,7 +3,8 @@
 #include <functional>
 #include <string>
 #include <iomanip>
-#include <easylogging++.h>
+
+#include "ext/easyloggingpp/src/easylogging++.h"
 
 namespace robo {
 namespace vir {

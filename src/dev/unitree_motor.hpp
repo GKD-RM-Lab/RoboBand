@@ -6,12 +6,12 @@
 
 namespace robo {
 namespace dev {
-class UnitreeMotor: public Dev<robo::io::Serial> {
+class UnitreeMotor: public Dev<io::Serial> {
 public:
-    explicit UnitreeMotor(robo::io::Serial &io_serial, const std::string &motor_name, const uint8_t id, const int dir);
+    explicit UnitreeMotor(io::Serial &io_serial, const std::string &motor_name, const uint8_t id, const int dir);
     ~UnitreeMotor() override = default;
 
-    robo::vir::MotorBinder binder {
+    vir::MotorBinder binder {
         .setTorque = [this](float torque) { this->setTorque(torque); },
         .angle= &this->angle,
         .speed = &this->speed,

@@ -20,11 +20,11 @@ public:
     void run(std::atomic<bool>& running);
 
 protected:
-    std::vector<robo::ctrl::Ctrl *> ctrls;
+    std::vector<ctrl::Ctrl *> ctrls;
 #ifdef USE_WEBOTS
-    robo::io::Webots webots_io;
+    io::Webots webots_io;
 #endif
-    std::vector<robo::io::Io *> ios;
+    std::vector<io::Io *> ios;
 
     virtual void bindVirtualDev() = 0;
     virtual void devInit() = 0;

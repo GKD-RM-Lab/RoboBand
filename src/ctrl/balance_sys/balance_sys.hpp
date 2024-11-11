@@ -14,9 +14,9 @@ public:
     explicit BalanceSys(const toml::table &config, const std::string &name = "balance_sys");
     ~BalanceSys() override = default;
 
-    robo::vir::Imu imu;
-    robo::vir::Motor wheel_motor[2];
-    robo::vir::Motor joint_motor[2];
+    vir::Imu imu;
+    vir::Motor wheel_motor[2];
+    vir::Motor joint_motor[2];
 
     void ctrlLoop() override;
 

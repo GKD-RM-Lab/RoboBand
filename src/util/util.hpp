@@ -9,8 +9,9 @@
 #include <cxxabi.h>
 #include <toml++/impl/forward_declarations.hpp>
 #include <toml++/toml.hpp>
-#include <easylogging++.h>
 #include <netdb.h>
+
+#include "ext/easyloggingpp/src/easylogging++.h"
 
 namespace robo {
 namespace util {
@@ -184,6 +185,4 @@ template<typename T>
 struct is_streamable<T, std::void_t<decltype(std::declval<std::ostream&>() << std::declval<T>())>> : std::true_type {};
 }
 }
-
-using robo::util::operator>;
 

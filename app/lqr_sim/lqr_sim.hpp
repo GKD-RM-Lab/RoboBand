@@ -15,9 +15,9 @@ public:
 private:
     ctrl::BalanceSys balance_sys;
 
-    robo::dev::WebotsImu imu;
-    robo::dev::WebotsMotor wheel_motor[2];
-    robo::dev::WebotsMotor joint_motor[2];
+    dev::WebotsImu imu;
+    dev::WebotsMotor wheel_motor[2];
+    dev::WebotsMotor joint_motor[2];
     
     void bindVirtualDev() override;
     void devInit() override;

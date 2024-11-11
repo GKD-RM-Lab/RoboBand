@@ -13,7 +13,7 @@ public:
     }
     virtual ~Ctrl() = default;
 
-    robo::run::Runner runner;
+    run::Runner runner;
 
     virtual void ctrlLoop() = 0;
 

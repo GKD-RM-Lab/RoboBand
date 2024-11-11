@@ -6,7 +6,6 @@
 #include <string>
 #include <thread>
 #include <map>
-#include <easylogging++.h>
 
 #include "util/util.hpp"
 
@@ -80,7 +79,7 @@ private:
             if (len > 0) {
                 auto it = unpackers.find(key);
                 if (it == unpackers.end()) {
-                    if constexpr (robo::util::is_streamable<Tkey>::value) {
+                    if constexpr (util::is_streamable<Tkey>::value) {
                         LOG(WARNING) << "[IO<" + name + ">] Unbound key read: " << key << ".";
                     } else {
                         LOG(WARNING) << "[IO<" + name + ">] Unbound key read.";

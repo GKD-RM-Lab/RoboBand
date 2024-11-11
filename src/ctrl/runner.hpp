@@ -27,7 +27,7 @@ public:
     void run();
     void stop();
 #ifdef USE_WEBOTS
-    void bind(robo::io::Webots &webots_io_);
+    void bind(io::Webots &webots_io_);
 #endif
 
 private:
@@ -37,7 +37,7 @@ private:
     std::function<void ()> task;
     std::thread *thread {nullptr};
 #ifdef USE_WEBOTS
-    robo::io::Webots *webots_io;
+    io::Webots *webots_io;
 #endif
 
     void thread_func();

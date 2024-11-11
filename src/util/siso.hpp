@@ -130,6 +130,3 @@ private:
 }
 }
 
-using robo::util::operator>>;
-using robo::util::operator+;
-

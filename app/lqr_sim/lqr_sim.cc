@@ -8,10 +8,10 @@ namespace robo {
 LqrSim::LqrSim(const toml::table &config):
     balance_sys(config > "ctrl" > "balance_sys"), 
     imu(webots_io, getValue<std::string>(config, "inertial"), getValue<std::string>(config, "gyro")),
-    wheel_motor{robo::dev::WebotsMotor(webots_io, getValue<std::string>(config, "wheel_motor_1"), getValue<int>(config, "wheel_motor_1_dir")),
-                robo::dev::WebotsMotor(webots_io, getValue<std::string>(config, "wheel_motor_2"), getValue<int>(config, "wheel_motor_2_dir"))},
-    joint_motor{robo::dev::WebotsMotor(webots_io, getValue<std::string>(config, "joint_motor_1"), getValue<int>(config, "joint_motor_1_dir")),
-                robo::dev::WebotsMotor(webots_io, getValue<std::string>(config, "joint_motor_2"), getValue<int>(config, "joint_motor_2_dir"))} {
+    wheel_motor{dev::WebotsMotor(webots_io, getValue<std::string>(config, "wheel_motor_1"), getValue<int>(config, "wheel_motor_1_dir")),
+                dev::WebotsMotor(webots_io, getValue<std::string>(config, "wheel_motor_2"), getValue<int>(config, "wheel_motor_2_dir"))},
+    joint_motor{dev::WebotsMotor(webots_io, getValue<std::string>(config, "joint_motor_1"), getValue<int>(config, "joint_motor_1_dir")),
+                dev::WebotsMotor(webots_io, getValue<std::string>(config, "joint_motor_2"), getValue<int>(config, "joint_motor_2_dir"))} {
     ctrls.push_back(&balance_sys);
     bindVirtualDev();
     devInit();

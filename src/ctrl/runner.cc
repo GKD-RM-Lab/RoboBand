@@ -1,5 +1,3 @@
-#include <easylogging++.h>
-
 #include "ctrl/runner.hpp"
 #include "util/util.hpp"
 
@@ -16,7 +14,7 @@ void Runner::stop() {
 #ifdef USE_WEBOTS
 void Runner::run() {
     if (webots_io == nullptr) {
-        LOG(ERROR) << "[Runner<" + name + ">] You haven't bound robo::io::webots before running!";
+        LOG(ERROR) << "[Runner<" + name + ">] You haven't bound webots_io before running!";
         return;
     }
     if (thread != nullptr) {
@@ -45,7 +43,7 @@ void Runner::thread_func() {
     }
 }
 
-void Runner::bind(robo::io::Webots &webots_io_) {
+void Runner::bind(io::Webots &webots_io_) {
     webots_io = &webots_io_;
     webots_io->bind_runner_num++;
 }

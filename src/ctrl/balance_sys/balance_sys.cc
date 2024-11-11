@@ -23,14 +23,14 @@ void BalanceSys::ctrlLoop() {
 
     float s = (wheel_motor[0].getAngle() + wheel_motor[1].getAngle()) * RADIUS_WHEEL / 2;
     float dot_s = (wheel_motor[0].getSpeed() + wheel_motor[1].getSpeed()) * RADIUS_WHEEL / 2;
-    float phi = imu.getAngle(robo::vir::Imu::Yaw);
-    float dot_phi = imu.getSpeed(robo::vir::Imu::Yaw);
+    float phi = imu.getAngle(vir::Imu::Yaw);
+    float dot_phi = imu.getSpeed(vir::Imu::Yaw);
     float theta_j_1 = joint_motor[0].getAngle();
     float theta_j_2 = joint_motor[1].getAngle();
     float dot_theta_j_1 = joint_motor[0].getSpeed();
     float dot_theta_j_2 = joint_motor[1].getSpeed();
-    float theta_b = imu.getAngle(robo::vir::Imu::Pitch);
-    float dot_theta_b = imu.getSpeed(robo::vir::Imu::Pitch);
+    float theta_b = imu.getAngle(vir::Imu::Pitch);
+    float dot_theta_b = imu.getSpeed(vir::Imu::Pitch);
     float theta_l_1 = theta_b + theta_j_1;
     float theta_l_2 = theta_b + theta_j_2;
     float dot_theta_l_1 = dot_theta_b + dot_theta_j_1;

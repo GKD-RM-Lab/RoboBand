@@ -8,12 +8,12 @@
 
 namespace robo {
 namespace dev {
-class WebotsImu: public Dev<robo::io::Webots> {
+class WebotsImu: public Dev<io::Webots> {
 public:
-    explicit WebotsImu(robo::io::Webots &webots_io, const std::string &inertial_name, const std::string &gyro_name);
+    explicit WebotsImu(io::Webots &webots_io, const std::string &inertial_name, const std::string &gyro_name);
     ~WebotsImu() = default;
 
-    robo::vir::ImuBinder binder {
+    vir::ImuBinder binder {
         .angle = this->angle,
         .speed = this->speed
     };

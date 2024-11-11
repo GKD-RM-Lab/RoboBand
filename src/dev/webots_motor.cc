@@ -4,7 +4,7 @@
 
 namespace robo {
 namespace dev {
-WebotsMotor::WebotsMotor(robo::io::Webots &webots_io, const std::string& motor_name, const int dir):
+WebotsMotor::WebotsMotor(io::Webots &webots_io, const std::string& motor_name, const int dir):
     Dev(webots_io),
     motor(*webots_io.robot.getMotor(motor_name)),
     encoder(*motor.getPositionSensor()),

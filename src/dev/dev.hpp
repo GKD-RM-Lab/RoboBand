@@ -1,8 +1,8 @@
 #pragma once
 
 #include <type_traits>
-#include <easylogging++.h>
 
+#include "ext/easyloggingpp/src/easylogging++.h"
 #include "io/io.hpp"
 #ifdef USE_WEBOTS
 #include "io/webots.hpp"
@@ -14,7 +14,7 @@ template <typename IO, typename Enable = void>
 class Dev;
 
 template <typename IO>
-class Dev<IO, typename std::enable_if<std::is_base_of<robo::io::IoKey<typename IO::key_type>, IO>::value>::type> {
+class Dev<IO, typename std::enable_if<std::is_base_of<io::IoKey<typename IO::key_type>, IO>::value>::type> {
 public:
     explicit Dev(const std::string &name, IO &io, const typename IO::key_type io_key):
         name(name),
@@ -22,7 +22,7 @@ public:
         io_key(io_key) {
         auto it = io.unpackers.find(io_key);
         if (it != io.unpackers.end()) {
-            if constexpr (robo::util::is_streamable<typename IO::key_type>::value) {
+            if constexpr (util::is_streamable<typename IO::key_type>::value) {
                 LOG(ERROR) << "[Dev<" + name + R"(>] You used duplicate key ")" << io_key << R"(" when binging to IO ")" << io.name << R"("!)";
             } else {
                 LOG(ERROR) << "[Dev<" + name + R"(>] You used duplicate key when binging to IO ")" << io.name << R"("!)";
@@ -50,7 +50,7 @@ private:
 };
 
 template <typename IO>
-class Dev<IO, typename std::enable_if<std::is_base_of<robo::io::IoNoKey, IO>::value>::type> {
+class Dev<IO, typename std::enable_if<std::is_base_of<io::IoNoKey, IO>::value>::type> {
 public:
     explicit Dev(const std::string &name, IO &io):
         name(name),
@@ -71,9 +71,9 @@ private:
 
 #ifdef USE_WEBOTS
 template <>
-class Dev<robo::io::Webots> {
+class Dev<io::Webots> {
 public:
-    explicit Dev(robo::io::Webots &webots_io):
+    explicit Dev(io::Webots &webots_io):
         webots_io(webots_io) {
         webots_io.updaters.push_back([this]() { update(); });
     }
@@ -81,7 +81,7 @@ public:
     virtual ~Dev() = default;
 
 protected:
-    robo::io::Webots &webots_io;
+    io::Webots &webots_io;
 
 private:
     virtual void update() = 0;

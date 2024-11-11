@@ -4,7 +4,7 @@
 
 namespace robo {
 namespace dev {
-WebotsImu::WebotsImu(robo::io::Webots &webots_io, const std::string &inertial_name, const std::string &gyro_name):
+WebotsImu::WebotsImu(io::Webots &webots_io, const std::string &inertial_name, const std::string &gyro_name):
     Dev(webots_io),
     inertial(*webots_io.robot.getInertialUnit(inertial_name)),
     gyro(*webots_io.robot.getGyro(gyro_name)) {

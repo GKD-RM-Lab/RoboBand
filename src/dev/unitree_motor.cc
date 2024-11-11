@@ -2,7 +2,7 @@
 #include <string>
 
 #include "dev/unitree_motor.hpp"
-#include "CRC.h"
+#include "ext/crcpp/inc/CRC.h"
 
 namespace robo {
 namespace dev {
@@ -17,7 +17,7 @@ const std::array<std::string, 8> UnitreeMotor::err_msg {
     "Reserved",
 };
 
-UnitreeMotor::UnitreeMotor(robo::io::Serial &io_serial, const std::string &motor_name, const uint8_t id, const int dir):
+UnitreeMotor::UnitreeMotor(io::Serial &io_serial, const std::string &motor_name, const uint8_t id, const int dir):
     Dev(motor_name, io_serial),
     id(id),
     dir(dir) {
