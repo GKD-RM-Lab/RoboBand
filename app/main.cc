@@ -13,6 +13,7 @@ std::string project_path;
 void SigintHandler(int signum) {
     LOG(INFO) << "Interrupt signal (" << signum << ") received!";
     running = false;
+    exit(0);
 }
 
 int main(int argc, char **argv) {

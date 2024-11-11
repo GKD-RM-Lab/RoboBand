@@ -11,4 +11,5 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(crcpp)
 
-include_directories(${MOUDLE_DIR}/inc)
+add_library(crcpp INTERFACE)
+target_include_directories(crcpp INTERFACE ${MOUDLE_DIR}/inc)

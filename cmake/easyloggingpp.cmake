@@ -12,7 +12,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(easyloggingpp)
 
-add_library(easyloggingpp ${MOUDLE_DIR}/src/easylogging++.cc)
+add_library(easyloggingpp SHARED ${MOUDLE_DIR}/src/easylogging++.cc)
+target_compile_options(easyloggingpp PRIVATE -Wno-all)
 target_compile_definitions(
     easyloggingpp 
     PUBLIC ELPP_STL_LOGGING
