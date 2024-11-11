@@ -3,7 +3,7 @@
 #include <termios.h>
 #include <csignal>
 #include <poll.h>
-#include <set>
+#include <map>
 
 #include "io/io.hpp"
 
@@ -16,15 +16,12 @@ public:
 
     void addRxHeadTail(const std::string &head, const std::string &tail);
     int read(uint8_t *data) override;
-    void readDirtyHook() override {}
-    void readCompleteHook() override {}
     bool send(const uint8_t *message, const int len, const int sleep_us = -1);
 
 private:
     const speed_t Bbaudrate;
 
-    std::set<std::string> rx_heads;
-    std::set<std::string> rx_tails;
+    std::map<std::string, std::string> head_tails;
 
     pollfd pfd;
     sigset_t sigmask;

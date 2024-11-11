@@ -75,10 +75,7 @@ Serial::~Serial() {
 }
 
 void Serial::addRxHeadTail(const std::string &head, const std::string &tail) {
-    if (head.length() != 0)
-        rx_heads.insert(head);
-    if (tail.length() != 0)
-        rx_tails.insert(tail);
+        head_tails[head] = tail;
 }
 
 int Serial::read(uint8_t *data) {
@@ -95,15 +92,14 @@ int Serial::read(uint8_t *data) {
         if (n == 0) {
             ::ppoll(&pfd, 1, got_data ? &timeout_inline : &timeout_wait, &sigmask);
             if (!(pfd.revents & POLLIN)) {
-                LOG(WARNING) << "[Serial<" << name << ">] Read timeout!";
+                LOG(WARNING) << "[Serial<" << name << ">] Read timeout " << (got_data ? "(inline)." : "(wait).");
                 break;
             }
         } else {
             got_data = true;
-            LOG(INFO) << "[Serial<" << name << ">] Got data: " << n;
             read_len += n;
             auto rx = std::string((char *)data, read_len);
-            for (auto &head: rx_heads) {
+            for (auto &[head, tail]: head_tails) {
                 if (read_len < (int)head.length()) {
                     break;
                 } else {
@@ -112,18 +108,16 @@ int Serial::read(uint8_t *data) {
                         read_len = 0;
                     } else {
                         read_len -= pos;
-                        memmove(data, data + pos, read_len);
+                        if (pos != 0) {
+                            memmove(data, data + pos, read_len);
+                        }
                         break;
                     }
                 }
-            }
-            
             // TODO tail
+            }
         }
     }
-    timespec t_now;
-    clock_gettime(CLOCK_MONOTONIC, &t_now);
-    std::cout << t_now.tv_nsec / util::Ms<util::Ns> << std::endl;
     return read_len;
 }
 

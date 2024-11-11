@@ -77,9 +77,7 @@ private:
             int len;
             Tkey key;
             len = read(key, buffer);
-            if (len <= 0) {
-                LOG(WARNING) << "[IO<" + name + ">] Read Error!";
-            } else {
+            if (len > 0) {
                 auto it = unpackers.find(key);
                 if (it == unpackers.end()) {
                     if constexpr (robo::util::is_streamable<Tkey>::value) {
@@ -105,17 +103,13 @@ public:
     std::vector<std::function<bool (const uint8_t *, const int len)>> unpackers;
 
     virtual int read(uint8_t *data) = 0;
-    virtual void readDirtyHook() = 0;
-    virtual void readCompleteHook() = 0;
 
 private:
     void thread_func() override {
         while (running) {
             memset(buffer, 0, buffer_size);
             int len = read(buffer);
-            if (len <= 0) {
-                LOG(WARNING) << "[IO<" + name + ">] Read Error!";
-            } else {
+            if (len > 0) {
                 bool is_unpacked = false;
                 for (auto &unpacker: unpackers) {
                     is_unpacked = unpacker(buffer, len);
@@ -125,29 +119,8 @@ private:
                 }
                 if (!is_unpacked) {
                     LOG(WARNING) << "[IO<" + name + ">] The data read does not have a matching unpacker.";
-                    printf("%d, %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x\r\n",
-                       len,
-                       buffer[0],
-                       buffer[1],
-                       buffer[2],
-                       buffer[3],
-                       buffer[4],
-                       buffer[5],
-                       buffer[6],
-                       buffer[7],
-                       buffer[8],
-                       buffer[9],
-                       buffer[10],
-                       buffer[11],
-                       buffer[12],
-                       buffer[13],
-                       buffer[14],
-                       buffer[15]
-                    );
-                    readDirtyHook();
                 }
             }
-            readCompleteHook();
         }
     }
 };

@@ -4,7 +4,7 @@ robot = "Aokee"
 rs485 = "/dev/serial/by-id/usb-Corecloud_Corecloud_Device-if00"
 
 [ctrl.chassis]
-cycle_ms = 10
+cycle_ms = 5
 leg_param = [0.06, 0.15, 0.22]
 F_gravity = 40
 pid_l_param = [1000, 2, 1000000, 10, 100]
