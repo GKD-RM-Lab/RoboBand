@@ -1,8 +1,7 @@
 #pragma once
 
-#include <toml++/toml.hpp>
-#include <eigen3/Eigen/Eigen>
-
+#include "ext/tomlplusplus/include/toml++/toml.hpp"
+#include "ext/eigen/Eigen/Eigen"
 #include "ctrl/ctrl.hpp"
 #include "virtual/motor.hpp"
 #include "virtual/imu.hpp"

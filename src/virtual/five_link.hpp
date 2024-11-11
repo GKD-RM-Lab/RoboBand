@@ -2,7 +2,8 @@
 
 #include <string>
 #include <virtual/motor.hpp>
-#include <eigen3/Eigen/Eigen>
+
+#include "ext/eigen/Eigen/Eigen"
 
 namespace robo {
 namespace vir {

@@ -13,7 +13,8 @@ target_link_libraries(src PUBLIC
     dl 
     rt 
     pthread
-    easyloggingpp)
+    easyloggingpp
+    tomlplusplus)
 
 if(USE_WEBOTS)
     include(webots)

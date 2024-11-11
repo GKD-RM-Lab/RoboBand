@@ -7,10 +7,9 @@
 #include <type_traits>
 #include <typeinfo>
 #include <cxxabi.h>
-#include <toml++/impl/forward_declarations.hpp>
-#include <toml++/toml.hpp>
 #include <netdb.h>
 
+#include "ext/tomlplusplus/include/toml++/toml.hpp"
 #include "ext/easyloggingpp/src/easylogging++.h"
 
 namespace robo {

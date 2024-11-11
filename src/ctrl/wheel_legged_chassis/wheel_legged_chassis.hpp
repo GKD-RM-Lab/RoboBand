@@ -1,9 +1,8 @@
 #pragma once
 
 #include <iomanip>
-#include <toml++/toml.hpp>
-#include <eigen3/Eigen/Eigen>
 
+#include "ext/eigen/Eigen/Eigen"
 #include "ctrl/ctrl.hpp"
 #include "util/siso.hpp"
 #include "util/util.hpp"
