@@ -21,6 +21,7 @@ UnitreeMotor::UnitreeMotor(robo::io::Serial &io_serial, const std::string &motor
     Dev(motor_name, io_serial),
     id(id),
     dir(dir) {
+    io_serial.addRxHeadTail(std::to_string(RESV_HEAD[0]) + std::to_string(RESV_HEAD[0]), "");
     send_data.head[0] = SEND_HEAD[0];
     send_data.head[1] = SEND_HEAD[1];
     send_data.info.id = id;
@@ -34,7 +35,7 @@ void UnitreeMotor::setTorque(float torque) {
     send_data.msg.torque_set = (int16_t)(util::abs_limit(torque * dir, 127.9f) * 256.0f);
     send_data.CRC = CRC::Calculate(&send_data, sizeof(send_data) - sizeof(send_data.CRC), CRC::CRC_16_KERMIT());
 
-    io.send((uint8_t *)&send_data, sizeof(send_data));
+    io.send((uint8_t *)&send_data, sizeof(send_data), SEND_TIME_US);
 }
 
 void UnitreeMotor::setAngelOffset(float angle_offset_) {
@@ -47,10 +48,10 @@ bool UnitreeMotor::unpack(const uint8_t *data, const int len) {
     if (fbk->head[0] != RESV_HEAD[0] || fbk->head[1] != RESV_HEAD[1] || fbk->info.id != id) {
         return false;
     }
-
     if (fbk->CRC != CRC::Calculate(data, sizeof(*fbk) - sizeof(fbk->CRC), CRC::CRC_16_KERMIT())) {
         return false;
     }
+
     angle = fbk->msg.angle_fbk / 32768.0f * 2.0f * std::numbers::pi_v<float> / RATIO;
     speed = fbk->msg.speed_fbk / 256.0f * 2.0f * std::numbers::pi_v<float> / RATIO;
     temp = fbk->msg.temp_fbk;

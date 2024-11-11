@@ -15,7 +15,7 @@ template <typename T>
 class WheelLeggedChassis: public Ctrl{
 public:
     explicit WheelLeggedChassis(const toml::table &config, const std::string &name = "wheel legged chassis"):
-        Ctrl(name, config > Key<int>("cycle_ms")),
+        Ctrl(name, config > Key<float>("cycle_ms")),
         leg{T(config > Key<float, T::link_param_num>("leg_param"), "left"),
             T(config > Key<float, T::link_param_num>("leg_param"), "right")},
         F_GRAVITY(config > Key<float>("F_gravity")),

@@ -8,7 +8,7 @@ namespace robo {
 namespace ctrl {
 class Ctrl {
 public:
-    explicit Ctrl(const std::string &name, const int cycle_ms):
+    explicit Ctrl(const std::string &name, const float cycle_ms):
         runner(name, [this]() { ctrlLoop(); }, cycle_ms) {
     }
     virtual ~Ctrl() = default;

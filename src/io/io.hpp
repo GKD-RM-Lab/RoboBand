@@ -106,6 +106,7 @@ public:
 
     virtual int read(uint8_t *data) = 0;
     virtual void readDirtyHook() = 0;
+    virtual void readCompleteHook() = 0;
 
 private:
     void thread_func() override {
@@ -124,7 +125,8 @@ private:
                 }
                 if (!is_unpacked) {
                     LOG(WARNING) << "[IO<" + name + ">] The data read does not have a matching unpacker.";
-                    printf("%x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x\r\n",
+                    printf("%d, %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x\r\n",
+                       len,
                        buffer[0],
                        buffer[1],
                        buffer[2],
@@ -145,6 +147,7 @@ private:
                     readDirtyHook();
                 }
             }
+            readCompleteHook();
         }
     }
 };

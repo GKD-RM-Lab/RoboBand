@@ -40,6 +40,13 @@ inline long getTimeDuration(const timespec &t_start, const timespec &t_end) {
     return (t_end.tv_nsec - t_start.tv_nsec) + (t_end.tv_sec - t_start.tv_sec) * Sec<Ns>;
 }
 
+inline void sleep(long ns) {
+    timespec t;
+    clock_gettime(CLOCK_MONOTONIC, &t);
+    incTime(t, ns);
+    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, nullptr);
+}
+
 /**math**/ 
 template <typename T>
 inline T abs_limit(T x, const T lim) {

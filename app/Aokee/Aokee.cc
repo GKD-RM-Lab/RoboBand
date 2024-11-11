@@ -5,7 +5,7 @@ using namespace robo::util;
 namespace robo {
 Aokee::Aokee(const toml::table &config):
     chassis(config > "ctrl" > "chassis"),
-    rs485(config > "io" > Key<std::string>("rs485"), 16, 4000000, 100),
+    rs485(config > "io" > Key<std::string>("rs485"), 16, B4000000, 100, 100000),
     motor {
         robo::dev::UnitreeMotor(rs485, "0", 0, 1),
         robo::dev::UnitreeMotor(rs485, "1", 1, -1),

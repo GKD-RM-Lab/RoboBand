@@ -2,7 +2,6 @@ robot = "Aokee"
 
 [io]
 rs485 = "/dev/serial/by-id/usb-Corecloud_Corecloud_Device-if00"
-# rs485 = "/dev/serial/by-id/usb-Horco_Horco_CMSIS-DAP_342741575204-if00"
 
 [ctrl.chassis]
 cycle_ms = 1

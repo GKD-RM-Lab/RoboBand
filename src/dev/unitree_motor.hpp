@@ -44,6 +44,7 @@ private:
     static constexpr uint8_t SEND_HEAD[2] {0xfe, 0xee};
     static constexpr uint8_t RESV_HEAD[2] {0xfd, 0xee};
     static constexpr float RATIO {6.33f};
+    static constexpr int SEND_TIME_US {150};
 
     struct Info {
         uint8_t id: 4;

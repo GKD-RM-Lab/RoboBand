@@ -77,14 +77,14 @@ void Runner::thread_func() {
         timespec t_now;
         clock_gettime(CLOCK_MONOTONIC, &t_now);
         util::incTime(t_set, cycle_ms * util::Ms<util::Ns>);
-        long t_duration = util::getTimeDuration(t_now, t_set);
-        if (t_duration <= 0) {
+        long t_remain = util::getTimeDuration(t_now, t_set);
+        if (t_remain <= 0) {
             long t_task = util::getTimeDuration(t_start, t_now);
-            long t_exceed = cycle_ms * util::Ms<util::Ns> - t_duration;
-            util::incTime(t_set, t_exceed);
+            long t_total = cycle_ms * util::Ms<util::Ns> - t_remain;
+            util::incTime(t_set, t_total);
             LOG(ERROR) << "[Runner<" + name + ">] Task execution time exceeded cycle time (" 
                        << "task: " << t_task << "ns, " << "total: "
-                       << t_exceed - t_duration << "/" << cycle_ms * util::Ms<util::Ns> << "ns)";
+                       << t_total << "/" << cycle_ms * util::Ms<util::Ns> << "ns)";
         }
         clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t_set, nullptr);
     }

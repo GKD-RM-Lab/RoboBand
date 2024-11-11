@@ -13,7 +13,7 @@ namespace robo {
 namespace run {
 class Runner {
 public:
-    explicit Runner(const std::string &name, std::function<void ()> task, int cycle_ms):
+    explicit Runner(const std::string &name, std::function<void ()> task, const float cycle_ms):
         name(name),
         cycle_ms(cycle_ms),
         task(task) {
@@ -32,7 +32,7 @@ public:
 
 private:
     const std::string name;
-    int cycle_ms;
+    const float cycle_ms;
     std::atomic<bool> running {false};
     std::function<void ()> task;
     std::thread *thread {nullptr};

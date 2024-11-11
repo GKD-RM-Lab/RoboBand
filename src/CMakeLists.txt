@@ -12,6 +12,5 @@ target_link_libraries(
            m 
            dl 
            rt 
-           pthread
-           serial)
+           pthread)
 
