@@ -16,7 +16,7 @@ Serial::Serial(const std::string &name, const int buffer_size, const speed_t Bba
     IoNoKey(name, buffer_size),
     Bbaudrate(Bbaudrate) {
 
-    sigemptyset(&sigmask);
+    ::sigemptyset(&sigmask);
 
     util::incTime(timeout_inline, timeout_inline_us * util::Us<util::Ns>);
     util::incTime(timeout_wait, timeout_wait_us * util::Us<util::Ns>);
@@ -27,28 +27,17 @@ Serial::Serial(const std::string &name, const int buffer_size, const speed_t Bba
     pfd.fd = ::open(name.c_str(), O_RDWR | O_NOCTTY);
     if (pfd.fd < 0) {
         LOG(ERROR) << "[Serial<" << name << ">] Error " << errno << " from open: " << std::strerror(errno);
-        return;
+        exit(errno);
     }
     if(::flock(pfd.fd, LOCK_EX | LOCK_NB) == -1) {
         LOG(ERROR) << "[Serial<" << name << ">] This port is already locked by another process.";
-        return;
-    }
-
-    serial_struct serial;
-    if (ioctl(pfd.fd, TIOCGSERIAL, &serial) != 0) {
-        LOG(ERROR) << "[Serial<" << name << ">] Error " << errno << " from ioctl: " << std::strerror(errno);
-        return;
-    }
-    serial.xmit_fifo_size = buffer_size * 1000;
-    if (ioctl(pfd.fd, TIOCSSERIAL, &serial) != 0) {
-        LOG(ERROR) << "[Serial<" << name << ">] Error " << errno << " from ioctl: " << std::strerror(errno);
-        return;
+        exit(errno);
     }
 
     struct termios tty;
-    if(::tcgetattr(pfd.fd, &tty) != 0) {
+    if (::tcgetattr(pfd.fd, &tty) != 0) {
         LOG(ERROR) << "[Serial<" << name << ">] Error " << errno << " from tcgetattr: " << std::strerror(errno);
-        return;
+        exit(errno);
     }
 
     tty.c_cflag &= (tcflag_t) ~(PARODD | PARENB | CSTOPB | CSIZE | CRTSCTS);
@@ -68,11 +57,11 @@ Serial::Serial(const std::string &name, const int buffer_size, const speed_t Bba
 
     if (::tcsetattr(pfd.fd, TCSANOW, &tty) != 0) {
         LOG(ERROR) << "[Serial<" << name << ">] Error " << errno << " from tcsetattr: " << std::strerror(errno);
-        return;
+        exit(errno);
     }
     if (::tcflush(pfd.fd, TCIOFLUSH) != 0) {
         LOG(ERROR) << "[Serial<" << name << ">] Error " << errno << " from tcflush: " << std::strerror(errno);
-        return;
+        exit(errno);
     }
 }
 
@@ -94,8 +83,7 @@ void Serial::addRxHeadTail(const std::string &head, const std::string &tail) {
 
 int Serial::read(uint8_t *data) {
     auto read_len = 0;
-    timespec t_start;
-    clock_gettime(CLOCK_MONOTONIC, &t_start);
+    bool got_data = false;
 
     while (read_len < buffer_size) {
         auto n = ::read(pfd.fd, data + read_len, buffer_size - read_len);
@@ -105,32 +93,38 @@ int Serial::read(uint8_t *data) {
         }
 
         if (n == 0) {
-            ::ppoll(&pfd, 1, read_len == 0 ? &timeout_wait : &timeout_inline, &sigmask);
+            ::ppoll(&pfd, 1, got_data ? &timeout_inline : &timeout_wait, &sigmask);
             if (!(pfd.revents & POLLIN)) {
-                LOG(ERROR) << "[Serial<" << name << ">] Read timeout";
+                LOG(WARNING) << "[Serial<" << name << ">] Read timeout!";
                 break;
             }
         } else {
-            // TODO head tail
-
+            got_data = true;
+            LOG(INFO) << "[Serial<" << name << ">] Got data: " << n;
             read_len += n;
-
-            timespec t_now;
-            clock_gettime(CLOCK_MONOTONIC, &t_now);
-            if (util::getTimeDuration(t_start, t_now) <= 0) {
-                break;
+            auto rx = std::string((char *)data, read_len);
+            for (auto &head: rx_heads) {
+                if (read_len < (int)head.length()) {
+                    break;
+                } else {
+                    auto pos = rx.find(head);
+                    if (pos == std::string::npos) {
+                        read_len = 0;
+                    } else {
+                        read_len -= pos;
+                        memmove(data, data + pos, read_len);
+                        break;
+                    }
+                }
             }
+            
+            // TODO tail
         }
     }
     timespec t_now;
     clock_gettime(CLOCK_MONOTONIC, &t_now);
     std::cout << t_now.tv_nsec / util::Ms<util::Ns> << std::endl;
     return read_len;
-}
-
-void Serial::readDirtyHook() {
-}
-void Serial::readCompleteHook() {
 }
 
 bool Serial::send(const uint8_t *message, const int len, const int sleep_us) {

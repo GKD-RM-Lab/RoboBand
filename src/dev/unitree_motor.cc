@@ -21,7 +21,7 @@ UnitreeMotor::UnitreeMotor(robo::io::Serial &io_serial, const std::string &motor
     Dev(motor_name, io_serial),
     id(id),
     dir(dir) {
-    io_serial.addRxHeadTail(std::to_string(RESV_HEAD[0]) + std::to_string(RESV_HEAD[0]), "");
+    io_serial.addRxHeadTail(std::string((char *)RESV_HEAD, sizeof(RESV_HEAD)), "");
     send_data.head[0] = SEND_HEAD[0];
     send_data.head[1] = SEND_HEAD[1];
     send_data.info.id = id;

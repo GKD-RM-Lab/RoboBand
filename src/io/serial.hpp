@@ -16,8 +16,8 @@ public:
 
     void addRxHeadTail(const std::string &head, const std::string &tail);
     int read(uint8_t *data) override;
-    void readDirtyHook() override;
-    void readCompleteHook() override;
+    void readDirtyHook() override {}
+    void readCompleteHook() override {}
     bool send(const uint8_t *message, const int len, const int sleep_us = -1);
 
 private:
