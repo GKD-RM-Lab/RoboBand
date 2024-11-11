@@ -13,6 +13,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
+file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/ext")
 include(crcpp)
 include(easyloggingpp)
 include(imgui)

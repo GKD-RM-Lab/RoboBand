@@ -64,24 +64,17 @@ out/
 *.eide-template
 
 # others
-.aux/
 .cache/
+.ref/
+ext/
+
 .DS_Store
 .gdbinit
-.mxproject
 .nvim.lua
-.ref/
-.tech-ref/
-debug*
-dkms.conf
-gdb-*
-modules.order
-Module.symvers
-Mkfile.old
-user.toml
+
 log/*
 !log/log.conf
 myeasylog.log
-.gdb*
-ext/
+
+user.toml
 
