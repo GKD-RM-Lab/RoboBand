@@ -2,7 +2,7 @@
 #include "src/util/util.hpp"
 
 namespace robo {
-void Robot::run(std::atomic<bool>& running) {
+void Robot::run(const std::atomic<bool>& running) {
     /*bind actual devices to virtual devices*/
     bindVirtualDev();
 #ifdef USE_WEBOTS
@@ -41,6 +41,5 @@ void Robot::run(std::atomic<bool>& running) {
         io->stop();
     }
 }
-
 }
 

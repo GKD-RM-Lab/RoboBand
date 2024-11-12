@@ -15,7 +15,7 @@ public:
     explicit Robot() = default;
     virtual ~Robot() = default;
 
-    void run(std::atomic<bool>& running);
+    void run(const std::atomic<bool>& running);
 
 protected:
     static constexpr int MAIN_SLEEP_MS {100};

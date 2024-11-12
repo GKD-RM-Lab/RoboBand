@@ -19,7 +19,7 @@ void init(const std::string& cfg_path) {
 void stop() {
 }
 
-void task() {
+void task(std::atomic<bool> &running, const std::string &cfg) {
 }
 
 void plot() {

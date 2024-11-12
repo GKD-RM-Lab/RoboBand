@@ -16,6 +16,10 @@ target_link_libraries(src PUBLIC
     easyloggingpp
     tomlplusplus)
 
+if(USE_SHOWTIME)
+    target_link_libraries(src PUBLIC showtime)
+endif()
+
 if(USE_WEBOTS)
     include(webots)
     target_link_libraries(src PUBLIC webots)

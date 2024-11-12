@@ -1,7 +1,10 @@
 #pragma once
 
+#include <atomic>
+#include <string>
+
 namespace show {
-void task();
+void task(std::atomic<bool> &running, const std::string &cfg);
 void plot();
 }
 

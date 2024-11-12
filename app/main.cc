@@ -2,8 +2,13 @@
 #include <csignal>
 #include <filesystem>
 
-#include "ext/easyloggingpp/src/easylogging++.h"
 #include "robot_create.hpp"
+#include "ext/easyloggingpp/src/easylogging++.h"
+
+#ifdef USE_SHOWTIME
+#include "showtime/show.hpp"
+#include "ext/tomlplusplus/include/toml++/toml.hpp"
+#endif
 
 INITIALIZE_EASYLOGGINGPP
 
@@ -24,7 +29,7 @@ int main(int argc, char **argv) {
     project_path = std::filesystem::absolute(argv[0]).parent_path().parent_path().parent_path();
 
     std::string robot_name;
-    std::string user_config_path = project_path + "/cfg/robot.toml";
+    std::string robot_config_path = project_path + "/cfg/robot.toml";
 
     /*init logger*/
     el::Loggers::configureFromGlobal((project_path + "/cfg/log.conf").c_str());
@@ -38,27 +43,41 @@ int main(int argc, char **argv) {
         LOG(ERROR) << "You passed the wrong command line arguments!";
         return -1;
     } else if (argc == 2) {
-        user_config_path = argv[1];
+        robot_config_path = argv[1];
     }
 
     /*open your configuration file*/
-    std::ifstream tomlFile(user_config_path);
+    std::ifstream tomlFile(robot_config_path);
     if (!tomlFile.is_open()) {
-        LOG(ERROR) << R"(Could not open file ")" + user_config_path + R"("!)";
-        LOG(ERROR) << "Error " << errno << " from open: " << std::strerror(errno);
-        return errno;
+        LOG(ERROR) << R"(Could not open file ")" + robot_config_path + R"("!)";
     }
 
     /*create a robot based on your configuration file*/
-    auto robot = robo::robotCreate(user_config_path);
+    auto robot = robo::robotCreate(robot_config_path);
     if (robot == nullptr) {
         return -1;
     }
 
+    /*If you need to monitor variables, start the showtime thread*/
+#ifdef USE_SHOWTIME
+    auto showtime_thread = std::thread([&]() {
+        try {
+            show::task(running, project_path + "/" + toml::parse_file(robot_config_path)["showtime_config"].value_or(""));
+        } catch (const std::exception &err) {
+            LOG(ERROR) << "[ShowTime] Error: " << err.what();
+            return;
+        }
+    });
+#endif
+
     /*run the robot until the program gets a SIGINT signal*/
     robot->run(running);
 
+    /*exit*/
     delete robot;
+#ifdef USE_SHOWTIME
+    showtime_thread.join();
+#endif
 
     LOG(INFO) << "Main thread exiting...";
 }

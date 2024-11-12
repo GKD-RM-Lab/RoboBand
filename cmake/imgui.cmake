@@ -26,5 +26,5 @@ target_include_directories(imgui PRIVATE
 target_compile_definitions(imgui PRIVATE 
     IMGUI_ENABLE_FREETYPE
     ImDrawIdx=unsigned\ int)
-target_link_libraries(imgui PRIVATE GL glfw)
+target_link_libraries(imgui PRIVATE GL glfw freetype)
 

@@ -10,6 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
+set(CMAKE_BUILD_PARALLEL_LEVEL ${CMAKE_CPU_COUNT})
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
@@ -23,7 +24,7 @@ include(easyloggingpp)
 include(imgui)
 include(implot)
 
-# set(USE_SHOWTIME ON) # TODO detach
+set(USE_SHOWTIME ON)
 set(USE_WEBOTS OFF)
 
 include_directories(${CMAKE_SOURCE_DIR})
