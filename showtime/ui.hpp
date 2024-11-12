@@ -3,7 +3,7 @@
 #define GL_SILENCE_DEPRECATION
 #include <GLFW/glfw3.h>
 
-namespace watch {
+namespace show {
 namespace ui {
 GLFWwindow *glfwWindowInit();
 ImGuiIO &imguiInit(GLFWwindow* window, float font_size);

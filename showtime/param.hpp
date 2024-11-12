@@ -4,7 +4,7 @@
 
 #include "ext/imgui/imgui.h"
 
-namespace watch {
+namespace show {
 namespace param {
 const bool USE_TAB = true;
 const float FONT_SIZE = 18.0f;

@@ -18,6 +18,7 @@ public:
     void run(std::atomic<bool>& running);
 
 protected:
+    static constexpr int MAIN_SLEEP_MS {100};
     std::vector<ctrl::Ctrl *> ctrls;
 #ifdef USE_WEBOTS
     io::Webots webots_io;

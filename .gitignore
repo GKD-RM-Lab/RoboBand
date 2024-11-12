@@ -67,14 +67,9 @@ out/
 .cache/
 .ref/
 ext/
+log/*
 
 .DS_Store
 .gdbinit
 .nvim.lua
-
-log/*
-!log/log.conf
-myeasylog.log
-
-user.toml
 

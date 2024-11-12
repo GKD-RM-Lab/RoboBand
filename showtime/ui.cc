@@ -13,7 +13,7 @@
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
 
-namespace watch {
+namespace show {
 namespace ui {
 static void glfw_error_callback(int error, const char* description)
 {
