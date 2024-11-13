@@ -23,7 +23,7 @@ target_include_directories(imgui PRIVATE
     ${MOUDLE_DIR}/backends
     ${MOUDLE_DIR}/misc/freetype
     /usr/include/freetype2)
-target_compile_definitions(imgui PRIVATE 
+target_compile_definitions(imgui PUBLIC 
     IMGUI_ENABLE_FREETYPE
     ImDrawIdx=unsigned\ int)
 target_link_libraries(imgui PRIVATE GL glfw freetype)

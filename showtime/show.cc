@@ -8,8 +8,7 @@
 
 namespace show {
 item::Graphs graphs;
-
-static bool need_show = false;
+bool need_show {false};
 
 static void show() {
     static bool pause = false;
@@ -17,8 +16,8 @@ static void show() {
     static bool auto_fit = true;
     static bool link_axis_x = true;
     static ImPlotRange lims {0.0, 5.0};
-    static float history_sync;
-    static float history_sync_max;
+    static float history_sync {5.0f};
+    static float history_sync_max {30.0f};
     static constexpr ImPlotAxisFlags flags_x = ImPlotAxisFlags_NoInitialFit | ImPlotAxisFlags_NoSideSwitch | ImPlotAxisFlags_RangeFit;
 
     ImGui::SeparatorText("Options");
@@ -51,37 +50,34 @@ static void show() {
 
     ImGui::SeparatorText("Plots");
     if (!ImPlot::BeginSubplots("", graphs.size(), 1, ImVec2(-1, param::HEIGHT_OF_EACH * graphs.size()), pause ? 0 : ImPlotSubplotFlags_LinkAllX)) {
-        goto next;
+        return;
     }
 
-    for (auto &graph: graphs) {
-        for (const auto &[name, graph]: graphs) {
-            if (!ImPlot::BeginPlot(name.c_str(), ImVec2(-1,300), (title ? 0 : ImPlotFlags_NoTitle) | ImPlotFlags_Crosshairs)) {
-                continue;
-            }
-            ImPlot::SetupAxes(nullptr, nullptr, flags_x, flags_y);
-
-            auto t = item::getTime();
-            if (!pause) {
-                    ImPlot::SetupAxisLimits(ImAxis_X1, t - history_sync, t, ImGuiCond_Always);
-            } else {
-                ImPlot::SetupAxisLinks(ImAxis_X1, link_axis_x ? &lims.Min : nullptr, link_axis_x ? &lims.Max : nullptr);
-            }
-
-            for (auto &var: graph) {
-                ImPlot::PlotLine(var.name.c_str(),
-                                 &var.data[0].x,
-                                 &var.data[0].y,
-                                 var.data.size(),
-                                 0,
-                                 var.offset,
-                                 2 * sizeof(float));
-            }
-            ImPlot::EndPlot();
+    for (const auto &[name, graph]: graphs) {
+        if (!ImPlot::BeginPlot(name.c_str(), ImVec2(-1,300), (title ? 0 : ImPlotFlags_NoTitle) | ImPlotFlags_Crosshairs)) {
+            continue;
         }
+        ImPlot::SetupAxes(nullptr, nullptr, flags_x, flags_y);
+
+        auto t = item::getTime();
+        if (!pause) {
+                ImPlot::SetupAxisLimits(ImAxis_X1, t - history_sync, t, ImGuiCond_Always);
+        } else {
+            ImPlot::SetupAxisLinks(ImAxis_X1, link_axis_x ? &lims.Min : nullptr, link_axis_x ? &lims.Max : nullptr);
+        }
+
+        for (auto &var: graph) {
+            ImPlot::PlotLine(var.name.c_str(),
+                             &var.data[0].x,
+                             &var.data[0].y,
+                             var.data.size(),
+                             0,
+                             var.offset,
+                             2 * sizeof(float));
+        }
+        ImPlot::EndPlot();
     }
     ImPlot::EndSubplots();
-next:
 }
 
 void task(std::atomic<bool> &running, const std::string &cfg_) {

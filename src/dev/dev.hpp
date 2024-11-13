@@ -14,7 +14,7 @@ template <typename IO, typename Enable = void>
 class Dev;
 
 template <typename IO>
-class Dev<IO, typename std::enable_if<std::is_base_of<io::IoKey<typename IO::key_type>, IO>::value>::type> {
+class Dev<IO, typename std::enable_if_t<std::is_base_of_v<io::IoKey<typename IO::key_type>, IO>>> {
 public:
     explicit Dev(const std::string &name, IO &io, const typename IO::key_type io_key):
         name(name),
@@ -50,7 +50,7 @@ private:
 };
 
 template <typename IO>
-class Dev<IO, typename std::enable_if<std::is_base_of<io::IoNoKey, IO>::value>::type> {
+class Dev<IO, typename std::enable_if_t<std::is_base_of_v<io::IoNoKey, IO>>> {
 public:
     explicit Dev(const std::string &name, IO &io):
         name(name),

@@ -32,10 +32,6 @@ void UnitreeMotor::setTorque(float torque) {
         torque = 0.0f;
     }
 
-    if (id == 3) {
-        LOG(INFO) << speed << ", " << torque;
-    }
-
     send_data.msg.torque_set = (int16_t)(util::abs_limit(torque * dir, 127.9f) * 256.0f);
     send_data.CRC = CRC::Calculate(&send_data, sizeof(send_data) - sizeof(send_data.CRC), CRC::CRC_16_KERMIT());
 
