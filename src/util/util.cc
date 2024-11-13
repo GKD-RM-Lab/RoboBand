@@ -91,7 +91,7 @@ in_addr_t to_in_addr(const std::string &host) {
     hints.ai_socktype = SOCK_DGRAM;
 
     if ((status = getaddrinfo(host.c_str(), nullptr, &hints, &res)) != 0) {
-        std::cerr << "getaddrinfo error: " << gai_strerror(status) << std::endl;
+        LOG(ERROR) << "Error " << errno << " from getaddrinfo: " << std::strerror(errno);
         return INADDR_NONE;
     }
 
@@ -99,7 +99,7 @@ in_addr_t to_in_addr(const std::string &host) {
     ip = ipv4->sin_addr.s_addr;
 
     if (res->ai_next != nullptr) {
-        std::clog << R"(The host ")" + host + R"(" corresponds to multiple IP addresses)";
+        LOG(WARNING) << R"(The host ")" + host + R"(" corresponds to multiple IP addresses)";
     }
 
     freeaddrinfo(res);

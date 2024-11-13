@@ -7,6 +7,14 @@
 #include "ext/tomlplusplus/include/toml++/toml.hpp"
 
 namespace show {
+long TASK_WAIT_SLEEP_MS {100};
+long TASK_SLEEP_MS {2};
+float FONT_SIZE {18.0f};
+std::string DEFAULT_GRAPH_NAME {"untitled"}; 
+std::string DEFAULT_VAR_NAME_PREFIX {"var"}; 
+int HEIGHT_OF_EACH {300};
+float HISTORY_DEFAULT {5.0f};
+
 item::Graphs graphs;
 bool need_show {false};
 
@@ -16,8 +24,8 @@ static void show() {
     static bool auto_fit = true;
     static bool link_axis_x = true;
     static ImPlotRange lims {0.0, 5.0};
-    static float history_sync {5.0f};
-    static float history_sync_max {30.0f};
+    static float history_sync {HISTORY_DEFAULT};
+    static float history_sync_max {HISTORY_DEFAULT * 5.0f};
     static constexpr ImPlotAxisFlags flags_x = ImPlotAxisFlags_NoInitialFit | ImPlotAxisFlags_NoSideSwitch | ImPlotAxisFlags_RangeFit;
 
     ImGui::SeparatorText("Options");
@@ -49,7 +57,7 @@ static void show() {
     }
 
     ImGui::SeparatorText("Plots");
-    if (!ImPlot::BeginSubplots("", graphs.size(), 1, ImVec2(-1, param::HEIGHT_OF_EACH * graphs.size()), pause ? 0 : ImPlotSubplotFlags_LinkAllX)) {
+    if (!ImPlot::BeginSubplots("", graphs.size(), 1, ImVec2(-1, HEIGHT_OF_EACH * graphs.size()), pause ? 0 : ImPlotSubplotFlags_LinkAllX)) {
         return;
     }
 
@@ -83,15 +91,25 @@ static void show() {
 void task(std::atomic<bool> &running, const std::string &cfg_) {
     /*get config*/
     toml::table cfg;
-    try {
-        cfg = toml::parse_file(cfg_);
-    } catch (const toml::parse_error &err) {
-        throw err;
+    if (cfg_ != "") {
+        try {
+            cfg = toml::parse_file(cfg_);
+            TASK_WAIT_SLEEP_MS = cfg["task_wait_sleep_ms"].value_or(TASK_WAIT_SLEEP_MS);
+            TASK_SLEEP_MS = cfg["task_sleep_ms"].value_or(TASK_SLEEP_MS);
+            FONT_SIZE = cfg["font_size"].value_or(FONT_SIZE);
+            item::BUFFER_SIZE = cfg["buffer_size"].value_or(item::BUFFER_SIZE);
+            DEFAULT_GRAPH_NAME = cfg["default_graph_name"].value_or(DEFAULT_GRAPH_NAME);
+            DEFAULT_VAR_NAME_PREFIX = cfg["default_var_name_prefix"].value_or(DEFAULT_VAR_NAME_PREFIX);
+            HEIGHT_OF_EACH = cfg["height_of_each"].value_or(HEIGHT_OF_EACH);
+            HISTORY_DEFAULT = cfg["history_default"].value_or(HISTORY_DEFAULT);
+        } catch (const toml::parse_error &err) {
+            throw err;
+        }
     }
 
     /*If not need show, keep waiting*/
     while (!need_show) {
-        ImGui_ImplGlfw_Sleep(param::TASK_WAIT_SLEEP_MS);
+        ImGui_ImplGlfw_Sleep(TASK_WAIT_SLEEP_MS);
         if (!running) {
             return;
         }
@@ -99,7 +117,7 @@ void task(std::atomic<bool> &running, const std::string &cfg_) {
 
     /*init*/
     GLFWwindow *window = ui::glfwWindowInit();
-    ImGuiIO &io = ui::imguiInit(window, cfg["font_size"].value_or(param::FONT_SIZE));
+    ImGuiIO &io = ui::imguiInit(window, FONT_SIZE);
 
     /*run*/
     while (running && !glfwWindowShouldClose(window)) {
@@ -112,7 +130,7 @@ void task(std::atomic<bool> &running, const std::string &cfg_) {
         ui::loopStart(window, io);
         show();
         ui::loopEnd(window, io);
-        ImGui_ImplGlfw_Sleep(param::TASK_SLEEP_MS);
+        ImGui_ImplGlfw_Sleep(TASK_SLEEP_MS);
     }
 
     ui::cleanup(window);

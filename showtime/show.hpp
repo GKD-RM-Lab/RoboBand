@@ -11,7 +11,7 @@ namespace show {
 extern item::Graphs graphs;
 extern bool need_show;
 
-void task(std::atomic<bool> &running, const std::string &cfg_);
+void task(std::atomic<bool> &running, const std::string &cfg_ = "");
 
 /*show::plot(a);*/
 /*show::plot(a, b, c, ...);*/
@@ -23,7 +23,7 @@ using NameValue = std::pair<std::string, float>;
 template <typename T>
 void add_to_vector(std::vector<NameValue> &params, T &&arg) {
     if constexpr (std::is_convertible_v<T, float>) {
-        params.emplace_back(param::DEFAULT_VAR_NAME_PREFIX, arg);
+        params.emplace_back(DEFAULT_VAR_NAME_PREFIX, arg);
     } else if constexpr (std::is_convertible_v<T, NameValue>) {
         params.emplace_back(arg);
     } else {
@@ -44,7 +44,7 @@ void plotGraph(item::Graph &graph, Args &&... args) {
     auto vars = to_vector(std::forward<Args>(args) ...);
     std::size_t i = 0;
     for (auto &var: vars) {
-        if (var.first == param::DEFAULT_VAR_NAME_PREFIX) {
+        if (var.first == DEFAULT_VAR_NAME_PREFIX) {
             var.first += std::to_string(i);
         }
         if (i == graph.size()) {
@@ -64,7 +64,7 @@ void plot(const std::string &graph_name, Args &&... args) {
 
 template <typename T, typename ... Args>
 auto plot(T &&arg, Args &&... args) -> std::enable_if_t<!std::is_convertible_v<T, std::string>> {
-    plot(param::DEFAULT_GRAPH_NAME, arg, std::forward<Args>(args) ...);
+    plot(DEFAULT_GRAPH_NAME, arg, std::forward<Args>(args) ...);
 }
 }
 

@@ -1,3 +1,10 @@
-robot = "Aokee"
+task_wait_sleep_ms = 100
+task_sleep_ms = 2
+font_size = 18.0
+default_graph_name = "untitled" 
+default_var_name_prefix = "var" 
+height_of_each = 300
+history_default = 5
 
-showtime_config = "cfg/showtime.toml"
+buffer_size = 30000
+

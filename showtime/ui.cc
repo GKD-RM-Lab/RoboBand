@@ -15,6 +15,8 @@
 
 namespace show {
 namespace ui {
+ImVec4 WINDOW_BG = ImVec4(0.114, 0.098, 0.161, 0.75);
+
 static void glfw_error_callback(int error, const char* description)
 {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
@@ -86,7 +88,7 @@ ImGuiIO &imguiInit(GLFWwindow* window, float font_size) {
     IM_ASSERT(font != nullptr);
 
     ImGuiStyle& style = ImGui::GetStyle();
-    style.Colors[ImGuiCol_WindowBg] = param::WINDOW_BG;
+    style.Colors[ImGuiCol_WindowBg] = WINDOW_BG;
 
     return io;
 }
