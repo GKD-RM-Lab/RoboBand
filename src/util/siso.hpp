@@ -28,7 +28,7 @@ struct Out {
         return o;
     }
     Out &operator>>(float &next) {
-        o += next;
+        next = o;
         return *this;
     }
 };

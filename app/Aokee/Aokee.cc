@@ -36,8 +36,8 @@ void Aokee::bindVirtualDev() {
     chassis.leg[0].motor1.bind(motor[2].binder);
     chassis.leg[0].motor2.bind(motor[3].binder);
     chassis.wheel[1].bind(motor[1].binder);
-    chassis.leg[1].motor1.bind(motor[4].binder);
-    chassis.leg[1].motor2.bind(motor[5].binder);
+    chassis.leg[1].motor1.bind(motor[5].binder); // be opposite to leg[0]
+    chassis.leg[1].motor2.bind(motor[4].binder);
 }
 
 void Aokee::devInit() {
@@ -69,14 +69,15 @@ void Aokee::devInit() {
                 break;
             }
         }
-        /*std::cout << std::setprecision(3)*/
-        /*          << chassis.leg[0].motor1.getAngle() << ", "*/
-        /*          << chassis.leg[0].motor2.getAngle() << ", "*/
-        /*          << chassis.leg[1].motor1.getAngle() << ", "*/
-        /*          << chassis.leg[1].motor2.getAngle() << std::endl;*/
 
         t += RETRACT_CTRL_CYCLE_MS;
     }
+    0.0f >> chassis.wheel[0];
+    0.0f >> chassis.leg[0].motor1;
+    0.0f >> chassis.leg[0].motor2;
+    0.0f >> chassis.wheel[1];
+    0.0f >> chassis.leg[1].motor1;
+    0.0f >> chassis.leg[1].motor2;
 }
 }
 

@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    /*If you need to monitor variables, start the showtime thread*/
+    /*if you need to monitor variables, start the showtime thread*/
 #ifdef USE_SHOWTIME
     auto showtime_thread = std::thread([&]() {
         try {

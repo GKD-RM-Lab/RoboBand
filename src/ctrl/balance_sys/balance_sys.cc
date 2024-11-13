@@ -16,7 +16,7 @@ BalanceSys::BalanceSys(const toml::table &config, const std::string &name):
     THETA_B_REF_MAX (config > Key<float>("theta_b_ref_max")),
     WHEEL_TORQUE_MAX(config > Key<float>("wheel_torque_max")),
     JOINT_TORQUE_MAX(config > Key<float>("joint_torque_max")),
-    K((config > Key<float, 4 * 10>("K")).data()) {
+    K(Eigen::Matrix<float, 10, 4>((config > Key<float, 4 * 10>("K")).data()).transpose()) {
 }
 
 void BalanceSys::ctrlLoop() {
