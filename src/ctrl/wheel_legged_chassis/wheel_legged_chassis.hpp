@@ -1,14 +1,12 @@
 #pragma once
 
-#include <iomanip>
-
 #include "ext/eigen/Eigen/Eigen"
 #include "ctrl/ctrl.hpp"
 #include "util/siso.hpp"
 #include "util/util.hpp"
 #include "virtual/motor.hpp"
 
-#include "showtime/show.hpp"
+#include "ext/showtime/src/show.hpp"
 
 using namespace robo::util;
 namespace robo {

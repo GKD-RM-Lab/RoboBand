@@ -6,8 +6,7 @@
 #include "ext/easyloggingpp/src/easylogging++.h"
 
 #ifdef USE_SHOWTIME
-#include "showtime/show.hpp"
-#include "ext/tomlplusplus/include/toml++/toml.hpp"
+#include "ext/showtime/src/show.hpp"
 #endif
 
 INITIALIZE_EASYLOGGINGPP

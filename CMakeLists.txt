@@ -21,15 +21,12 @@ include(eigen)
 include(tomlplusplus)
 include(crcpp)
 include(easyloggingpp)
-include(imgui)
-include(implot)
 
 set(USE_SHOWTIME ON)
 set(USE_WEBOTS OFF)
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-add_subdirectory(showtime) # TODO detach
 add_subdirectory(src)
 add_subdirectory(app)
 

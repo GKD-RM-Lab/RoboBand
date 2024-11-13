@@ -17,6 +17,8 @@ target_link_libraries(src PUBLIC
     tomlplusplus)
 
 if(USE_SHOWTIME)
+    include(showtime)
+    target_compile_definitions(src PUBLIC USE_SHOWTIME)
     target_link_libraries(src PUBLIC showtime)
 endif()
 
